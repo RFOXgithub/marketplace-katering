@@ -12,11 +12,20 @@ defineProps({
     type: String,
     default: 'max-w-3xl',
   },
+  sticky: {
+    type: Boolean,
+    default: true,
+  },
 })
 </script>
 
 <template>
-  <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
+  <header
+    :class="[
+      'z-40 mx-4 sm:mx-6',
+      sticky ? 'sticky top-4 sm:top-6' : 'relative mt-4 sm:mt-6',
+    ]"
+  >
     <div
       :class="[
         'mx-auto flex flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5',

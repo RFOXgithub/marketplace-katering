@@ -71,10 +71,10 @@ onMounted(loadProfile)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
     <PageBackground />
 
-    <PageHeader eyebrow="Portal Kantor" title="Profil Kantor">
+    <PageHeader :sticky="false" eyebrow="Portal Kantor" title="Profil Kantor">
       <CartButton />
       <BackButton to="/customer/home" />
     </PageHeader>

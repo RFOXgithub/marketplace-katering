@@ -46,10 +46,10 @@ onMounted(loadInvoice)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
     <PageBackground />
 
-    <PageHeader eyebrow="Portal Kantor" title="Detail Invoice">
+    <PageHeader :sticky="false" eyebrow="Portal Kantor" title="Detail Invoice">
       <CartButton />
       <BackButton to="/customer/invoices" />
     </PageHeader>

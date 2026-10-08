@@ -91,10 +91,10 @@ onMounted(loadOrder)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
     <PageBackground />
 
-    <PageHeader eyebrow="Portal Merchant" title="Detail Order">
+    <PageHeader :sticky="false" eyebrow="Portal Merchant" title="Detail Order">
       <BackButton to="/merchant/orders" />
     </PageHeader>
 

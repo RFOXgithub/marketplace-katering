@@ -5,6 +5,7 @@ import TrueFocus from '@/components/animations/TrueFokus.vue'
 import PixelSwap from '@/components/animations/PixelSwap.vue'
 import LightRays from '@/components/animations/LightRays.vue'
 import CartConflictModal from '@/components/customer/CartConflictModal.vue'
+import ClickSpark from '@/components/animations/ClickSpark.vue'
 
 const isSwapped = ref(false)
 const fadeOut = ref(false)
@@ -39,6 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <ClickSpark spark-color="#f5a623" :spark-size="10" :spark-radius="15" :spark-count="8" :duration="400">
   <div class="page-wrapper">
     <RouterView v-slot="{ Component, route }">
       <Transition :name="transitionName">
@@ -120,4 +122,5 @@ onMounted(() => {
       </template>
     </PixelSwap>
   </div>
+  </ClickSpark>
 </template>

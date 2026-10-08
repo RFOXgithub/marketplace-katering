@@ -52,7 +52,7 @@ onMounted(loadCatering)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
     <PageBackground />
 
     <PageHeader eyebrow="Portal Kantor" title="Detail Katering" max-width="max-w-5xl">
