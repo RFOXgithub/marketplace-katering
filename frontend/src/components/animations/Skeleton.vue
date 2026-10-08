@@ -25,7 +25,12 @@ defineProps({
 
 <style scoped>
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #e5e7eb 25%, rgba(245, 166, 35, 0.25) 50%, #e5e7eb 75%);
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base, #e5e7eb) 25%,
+    rgba(245, 166, 35, 0.25) 50%,
+    var(--skeleton-base, #e5e7eb) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-wave 1.6s ease-in-out infinite;
 }

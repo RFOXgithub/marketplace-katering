@@ -34,11 +34,11 @@ function handleChange(event) {
     <button
       type="button"
       @click="openPicker"
-      class="shrink-0 rounded-full bg-secondary/[0.06] px-4 py-2 text-xs font-semibold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
+      class="shrink-0 rounded-full bg-ink/[0.06] px-4 py-2 text-xs font-semibold text-ink transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
     >
       {{ label }}
     </button>
-    <span class="min-w-0 flex-1 truncate text-xs text-secondary/40">
+    <span class="min-w-0 flex-1 truncate text-xs text-subtle">
       {{ fileName || 'Belum ada file dipilih' }}
     </span>
   </div>

@@ -33,7 +33,7 @@ const STATUS_CLASS = {
   confirmed: 'bg-primary/10 text-primary-dark',
   delivered: 'bg-primary/10 text-primary-dark',
   completed: 'bg-accent/10 text-accent',
-  cancelled: 'bg-secondary/10 text-secondary/50',
+  cancelled: 'bg-ink/10 text-subtle',
 }
 
 async function loadOrder() {
@@ -67,7 +67,7 @@ onMounted(loadOrder)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader :sticky="false" eyebrow="Portal Kantor" title="Detail Order">
@@ -81,7 +81,7 @@ onMounted(loadOrder)
         <Skeleton width="100%" height="11rem" rounded="2rem" />
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 
       <div v-else-if="order" class="flex flex-col gap-5">
         <DoubleBezelCard>
@@ -92,7 +92,7 @@ onMounted(loadOrder)
               >
                 Order #{{ order.id }}
               </span>
-              <h2 class="mt-2 text-xl font-bold text-secondary">
+              <h2 class="mt-2 text-xl font-bold text-ink">
                 {{ order.merchant?.company_name ?? '-' }}
               </h2>
             </div>
@@ -100,52 +100,52 @@ onMounted(loadOrder)
           </div>
           <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
             <div>
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Tanggal Kirim
               </dt>
-              <dd class="mt-1 font-medium text-secondary">{{ formatDate(order.delivery_date) }}</dd>
+              <dd class="mt-1 font-medium text-ink">{{ formatDate(order.delivery_date) }}</dd>
             </div>
             <div class="sm:col-span-2">
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Alamat Pengiriman
               </dt>
-              <dd class="mt-1 font-medium text-secondary">{{ order.delivery_address }}</dd>
+              <dd class="mt-1 font-medium text-ink">{{ order.delivery_address }}</dd>
             </div>
             <div v-if="order.notes" class="sm:col-span-2">
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Catatan
               </dt>
-              <dd class="mt-1 font-medium text-secondary">{{ order.notes }}</dd>
+              <dd class="mt-1 font-medium text-ink">{{ order.notes }}</dd>
             </div>
           </dl>
         </DoubleBezelCard>
 
         <DoubleBezelCard delay="0.08s">
-          <h2 class="mb-4 text-xs font-semibold uppercase tracking-[0.1em] text-secondary/40">
+          <h2 class="mb-4 text-xs font-semibold uppercase tracking-[0.1em] text-subtle">
             Item Pesanan
           </h2>
           <div class="flex flex-col gap-2">
             <div
               v-for="item in order.items"
               :key="item.id"
-              class="flex items-center justify-between gap-4 rounded-xl bg-secondary/[0.03] px-4 py-3 text-sm"
+              class="flex items-center justify-between gap-4 rounded-xl bg-ink/[0.03] px-4 py-3 text-sm"
             >
-              <span class="flex-1 font-medium text-secondary">{{ item.menu_name }}</span>
-              <span class="text-secondary/50">{{ formatRupiah(item.price) }} × {{ item.quantity }}</span>
-              <span class="font-semibold text-secondary">{{ formatRupiah(item.subtotal) }}</span>
+              <span class="flex-1 font-medium text-ink">{{ item.menu_name }}</span>
+              <span class="text-subtle">{{ formatRupiah(item.price) }} × {{ item.quantity }}</span>
+              <span class="font-semibold text-ink">{{ formatRupiah(item.subtotal) }}</span>
             </div>
           </div>
-          <div class="mt-4 flex items-center justify-between border-t border-secondary/5 pt-4">
-            <span class="text-sm font-medium text-secondary/50">Total</span>
-            <span class="text-xl font-extrabold text-secondary">{{ formatRupiah(order.total_amount) }}</span>
+          <div class="mt-4 flex items-center justify-between border-t border-ink/5 pt-4">
+            <span class="text-sm font-medium text-subtle">Total</span>
+            <span class="text-xl font-extrabold text-ink">{{ formatRupiah(order.total_amount) }}</span>
           </div>
         </DoubleBezelCard>
 
         <DoubleBezelCard v-if="order.invoice" delay="0.16s" padding="p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Invoice</p>
-              <p class="mt-1 font-semibold text-secondary">{{ order.invoice.invoice_number }}</p>
+              <p class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Invoice</p>
+              <p class="mt-1 font-semibold text-ink">{{ order.invoice.invoice_number }}</p>
             </div>
             <span
               class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em]"
@@ -159,7 +159,7 @@ onMounted(loadOrder)
         <button
           v-if="order.status === 'pending'"
           @click="showCancelModal = true"
-          class="animate-fade-up flex items-center justify-center gap-2 rounded-full bg-red-50 py-3.5 text-sm font-bold text-red-500 ring-1 ring-red-100 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98]"
+          class="animate-fade-up flex items-center justify-center gap-2 rounded-full bg-red-500/10 py-3.5 text-sm font-bold text-red-600 dark:text-red-400 ring-1 ring-red-500/20 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98]"
           style="animation-delay: 0.24s"
         >
           Batalkan Order

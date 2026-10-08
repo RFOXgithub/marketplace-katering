@@ -46,7 +46,7 @@ function handelSubmit() {
 <template>
   <form @submit.prevent="handelSubmit" class="flex flex-col gap-4">
     <div class="flex flex-col gap-1.5">
-      <h2 class="text-[11px] font-semibold tracking-[0.08em] text-secondary/40 uppercase">
+      <h2 class="text-[11px] font-semibold tracking-[0.08em] text-subtle uppercase">
         Pilih Role Anda
       </h2>
       <RubberSegment
@@ -69,7 +69,7 @@ function handelSubmit() {
         :glide="75"
         draggable
         ariaLabel="Role"
-        className="border border-secondary/10"
+        className="border border-ink/10"
         @change="(value, index) => (role = value)"
       />
     </div>
@@ -118,7 +118,7 @@ function handelSubmit() {
       <template v-else>
         Daftar
         <span
-          class="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
+          class="flex h-7 w-7 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12" />

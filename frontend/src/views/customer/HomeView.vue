@@ -88,7 +88,7 @@ onMounted(handleInit)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader
@@ -123,7 +123,7 @@ onMounted(handleInit)
       >
         Logout
         <span
-          class="flex h-6 w-6 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -138,8 +138,8 @@ onMounted(handleInit)
       <div v-if="isLoading" class="flex flex-col gap-6">
         <Skeleton width="100%" height="4rem" rounded="1.75rem" />
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-secondary/5 p-2">
-            <div class="flex flex-col gap-2 rounded-[1.625rem] bg-white p-5">
+          <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-ink/5 p-2">
+            <div class="flex flex-col gap-2 rounded-[1.625rem] bg-card p-5">
               <Skeleton width="60%" height="1rem" />
               <Skeleton width="30%" height="0.75rem" />
               <Skeleton width="100%" height="0.75rem" class="mt-1" />
@@ -149,7 +149,7 @@ onMounted(handleInit)
         </div>
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-500">
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">
         {{ errorMessage }}
       </p>
 
@@ -162,24 +162,24 @@ onMounted(handleInit)
 
         <form
           @submit.prevent="handleSearch"
-          class="animate-fade-up flex flex-col gap-3 rounded-[1.75rem] bg-white p-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] ring-1 ring-secondary/5 sm:flex-row"
+          class="animate-fade-up flex flex-col gap-3 rounded-[1.75rem] bg-card p-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] ring-1 ring-ink/5 sm:flex-row"
           style="animation-delay: 0.06s"
         >
           <input
             v-model="keyword"
             type="text"
             placeholder="Cari nama katering..."
-            class="flex-1 rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+            class="flex-1 rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <input
             v-model="city"
             type="text"
             placeholder="Kota"
-            class="w-full rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:ring-2 focus:ring-primary sm:w-40"
+            class="w-full rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary sm:w-40"
           />
           <select
             v-model="categoryId"
-            class="w-full rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary sm:w-48"
+            class="w-full rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary sm:w-48"
           >
             <option value="">Semua Kategori</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -200,8 +200,8 @@ onMounted(handleInit)
         </form>
 
         <div v-if="isSearching" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-secondary/5 p-2">
-            <div class="flex flex-col gap-2 rounded-[1.625rem] bg-white p-5">
+          <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-ink/5 p-2">
+            <div class="flex flex-col gap-2 rounded-[1.625rem] bg-card p-5">
               <Skeleton width="60%" height="1rem" />
               <Skeleton width="30%" height="0.75rem" />
               <Skeleton width="100%" height="0.75rem" class="mt-1" />
@@ -210,7 +210,7 @@ onMounted(handleInit)
           </div>
         </div>
 
-        <p v-else-if="caterings.length === 0" class="text-sm text-secondary/40">
+        <p v-else-if="caterings.length === 0" class="text-sm text-subtle">
           Tidak ada katering yang ditemukan.
         </p>
 
@@ -218,20 +218,20 @@ onMounted(handleInit)
           <div
             v-for="(catering, index) in caterings"
             :key="catering.id"
-            class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
+            class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
             :style="{ animationDelay: `${Math.min(index, 8) * 0.06}s` }"
           >
             <div
               @click="router.push(`/caterings/${catering.slug}`)"
-              class="group flex h-full cursor-pointer flex-col gap-2 rounded-[1.625rem] bg-white p-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+              class="group flex h-full cursor-pointer flex-col gap-2 rounded-[1.625rem] bg-card p-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
             >
               <span
                 class="w-max rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-primary-dark"
               >
                 {{ catering.city }}
               </span>
-              <h2 class="mt-1 font-bold text-secondary">{{ catering.company_name }}</h2>
-              <p class="line-clamp-2 flex-1 text-sm text-secondary/50">
+              <h2 class="mt-1 font-bold text-ink">{{ catering.company_name }}</h2>
+              <p class="line-clamp-2 flex-1 text-sm text-subtle">
                 {{ catering.description || 'Belum ada deskripsi.' }}
               </p>
               <span

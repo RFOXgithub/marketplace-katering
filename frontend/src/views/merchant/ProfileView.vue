@@ -177,7 +177,7 @@ onMounted(loadProfile)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader eyebrow="Portal Merchant" title="Profil Perusahaan">
@@ -214,7 +214,7 @@ onMounted(loadProfile)
           </span>
 
           <div class="flex items-center gap-4">
-            <div class="rounded-2xl bg-secondary/5 p-1.5">
+            <div class="rounded-2xl bg-ink/5 p-1.5">
               <img
                 :src="
                   logoPreview ||
@@ -225,31 +225,31 @@ onMounted(loadProfile)
               />
             </div>
             <div class="flex min-w-0 flex-1 flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Logo Perusahaan
               </label>
               <FileUploadButton label="Pilih Logo" accept="image/*" @change="handleLogoChange" />
-              <p v-if="errors.logo" class="text-xs text-red-500">{{ errors.logo[0] }}</p>
+              <p v-if="errors.logo" class="text-xs text-red-600 dark:text-red-400">{{ errors.logo[0] }}</p>
             </div>
           </div>
 
           <div class="flex flex-col gap-1">
-            <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+            <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
               Nama Perusahaan
             </label>
             <input
               v-model="companyName"
               type="text"
-              class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+              class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="errors.company_name" class="text-xs text-red-500">
+            <p v-if="errors.company_name" class="text-xs text-red-600 dark:text-red-400">
               {{ errors.company_name[0] }}
             </p>
           </div>
 
           <div class="flex flex-col gap-1">
             <div class="flex items-center justify-between">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Alamat
               </label>
               <button
@@ -281,78 +281,78 @@ onMounted(loadProfile)
               v-model="address"
               rows="3"
               placeholder="Ketik alamat, atau pakai tombol lokasi di atas"
-              class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+              class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
-            <p v-if="locationError" class="text-xs text-red-500">{{ locationError }}</p>
-            <p v-if="errors.address" class="text-xs text-red-500">{{ errors.address[0] }}</p>
+            <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">{{ locationError }}</p>
+            <p v-if="errors.address" class="text-xs text-red-600 dark:text-red-400">{{ errors.address[0] }}</p>
           </div>
 
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Kota
               </label>
               <select
                 v-model="city"
-                class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="" disabled>Pilih kota</option>
                 <option v-for="opt in cityOptions" :key="opt.id" :value="opt.name">
                   {{ opt.name }}
                 </option>
               </select>
-              <p v-if="errors.city" class="text-xs text-red-500">{{ errors.city[0] }}</p>
+              <p v-if="errors.city" class="text-xs text-red-600 dark:text-red-400">{{ errors.city[0] }}</p>
             </div>
 
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Nomor Kontak
               </label>
               <input
                 v-model="contactPhone"
                 type="text"
-                class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <p v-if="errors.contact_phone" class="text-xs text-red-500">
+              <p v-if="errors.contact_phone" class="text-xs text-red-600 dark:text-red-400">
                 {{ errors.contact_phone[0] }}
               </p>
             </div>
           </div>
 
           <div class="flex flex-col gap-1">
-            <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+            <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
               Email Kontak
             </label>
             <input
               v-model="contactEmail"
               type="email"
-              class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+              class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            <p v-if="errors.contact_email" class="text-xs text-red-500">
+            <p v-if="errors.contact_email" class="text-xs text-red-600 dark:text-red-400">
               {{ errors.contact_email[0] }}
             </p>
           </div>
 
           <div class="flex flex-col gap-1">
-            <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+            <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
               Deskripsi
             </label>
             <textarea
               v-model="description"
               rows="4"
-              class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+              class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
-            <p v-if="errors.description" class="text-xs text-red-500">{{ errors.description[0] }}</p>
+            <p v-if="errors.description" class="text-xs text-red-600 dark:text-red-400">{{ errors.description[0] }}</p>
           </div>
 
           <label
-            class="flex items-center gap-3 rounded-2xl bg-secondary/[0.04] px-4 py-3 text-sm text-secondary/70"
+            class="flex items-center gap-3 rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-muted"
           >
             <input v-model="isActive" type="checkbox" class="h-4 w-4 accent-primary" />
             Tampilkan katering saya di pencarian customer
           </label>
 
-          <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+          <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
           <p
             v-if="successMessage"
             class="rounded-2xl bg-accent/10 px-4 py-2.5 text-sm font-medium text-accent"

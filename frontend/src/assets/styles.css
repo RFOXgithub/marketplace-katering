@@ -3,15 +3,53 @@
 /* stylelint-disable */
 @theme {
   --color-primary: #f5a623;
-  --color-primary-dark: #c47f00;
+  --color-primary-dark: var(--tone-primary-dark);
   --color-secondary: #121212;
-  --color-accent: #4a7c59;
+  --color-accent: var(--tone-accent);
   --color-surface: #2c1810;
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* semantic surface / text tokens (light values, overridden in .dark) */
+  --color-page: var(--tone-page);
+  --color-panel: var(--tone-panel);
+  --color-card: var(--tone-card);
+  --color-ink: var(--tone-ink);
+  --color-muted: var(--tone-muted);
+  --color-subtle: var(--tone-subtle);
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --tone-page: #f7f5f2;
+  --tone-panel: #fbfaf8;
+  --tone-card: #ffffff;
+  --tone-ink: #121212;
+  --tone-muted: #4b4b50;
+  --tone-subtle: #6b6b72;
+  --tone-primary-dark: #9a6200;
+  --tone-accent: #4a7c59;
+  --skeleton-base: #e5e7eb;
+}
+
+.dark {
+  color-scheme: dark;
+  --tone-page: #0b0b0c;
+  --tone-panel: #101012;
+  --tone-card: #17171a;
+  --tone-ink: #f5f5f4;
+  --tone-muted: #b4b4ba;
+  --tone-subtle: #8c8c93;
+  --tone-primary-dark: #f5a623;
+  --tone-accent: #6fbf8a;
+  --skeleton-base: #26262a;
 }
 
 body {
   font-family: var(--font-display);
+  background-color: var(--color-page);
+  color: var(--color-ink);
 }
 
 @keyframes fade-up-blur {

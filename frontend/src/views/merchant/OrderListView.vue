@@ -36,7 +36,7 @@ const STATUS_CLASS = {
   confirmed: 'bg-primary/10 text-primary-dark',
   delivered: 'bg-primary/10 text-primary-dark',
   completed: 'bg-accent/10 text-accent',
-  cancelled: 'bg-secondary/10 text-secondary/50',
+  cancelled: 'bg-ink/10 text-subtle',
 }
 
 const STATUS_FILTERS = [
@@ -81,7 +81,7 @@ onMounted(() => loadOrders(1))
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader eyebrow="Portal Merchant" title="Order Masuk" max-width="max-w-6xl">
@@ -95,8 +95,8 @@ onMounted(() => loadOrders(1))
         @update:model-value="selectFilter"
       />
 
-      <div v-if="isLoading" class="rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
-        <div class="flex flex-col gap-3 rounded-[1.625rem] bg-white p-6">
+      <div v-if="isLoading" class="rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5">
+        <div class="flex flex-col gap-3 rounded-[1.625rem] bg-card p-6">
           <div v-for="i in 6" :key="i" class="flex items-center gap-4">
             <Skeleton width="25%" height="0.875rem" />
             <Skeleton width="20%" height="0.875rem" />
@@ -106,9 +106,9 @@ onMounted(() => loadOrders(1))
         </div>
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 
-      <p v-else-if="orders.length === 0" class="text-sm text-secondary/40">Belum ada order.</p>
+      <p v-else-if="orders.length === 0" class="text-sm text-subtle">Belum ada order.</p>
 
       <DoubleBezelCard v-else delay="0.08s">
         <AnimatedList
@@ -119,18 +119,18 @@ onMounted(() => loadOrders(1))
         >
           <template #default="{ item: order }">
             <div
-              class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-secondary/5 bg-white p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
+              class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-ink/5 bg-card p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
             >
-              <span class="flex-1 truncate font-medium text-secondary">
+              <span class="flex-1 truncate font-medium text-ink">
                 {{ order.customer?.office_name ?? '-' }}
               </span>
-              <span class="hidden text-secondary/40 sm:block">
+              <span class="hidden text-subtle sm:block">
                 {{ formatDate(order.delivery_date) }}
               </span>
-              <span class="font-semibold text-secondary">{{ formatRupiah(order.total_amount) }}</span>
+              <span class="font-semibold text-ink">{{ formatRupiah(order.total_amount) }}</span>
               <StatusBadge :status="order.status" :labels="STATUS_LABEL" :classes="STATUS_CLASS" />
               <span
-                class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary/5 text-secondary/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
+                class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink/5 text-subtle transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />

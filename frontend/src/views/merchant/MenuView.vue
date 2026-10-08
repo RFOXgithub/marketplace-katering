@@ -165,7 +165,7 @@ onMounted(loadData)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader eyebrow="Portal Merchant" title="Kelola Menu" max-width="max-w-6xl">
@@ -186,7 +186,7 @@ onMounted(loadData)
         >
           Tambah Menu
           <span
-            class="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-90"
+            class="flex h-7 w-7 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-90"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -197,8 +197,8 @@ onMounted(loadData)
       </div>
 
       <div v-if="isLoading" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-secondary/5 p-2">
-          <div class="rounded-[1.625rem] bg-white p-4">
+        <div v-for="i in 6" :key="i" class="rounded-[2rem] bg-ink/5 p-2">
+          <div class="rounded-[1.625rem] bg-card p-4">
             <Skeleton width="100%" height="8rem" rounded="1.125rem" />
             <Skeleton width="60%" height="0.875rem" class="mt-3" />
             <Skeleton width="30%" height="0.875rem" class="mt-2" />
@@ -206,13 +206,13 @@ onMounted(loadData)
         </div>
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 
       <div
         v-else-if="menus.length === 0"
-        class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
+        class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
       >
-        <p class="rounded-[1.625rem] bg-white p-10 text-center text-sm text-secondary/40">
+        <p class="rounded-[1.625rem] bg-card p-10 text-center text-sm text-subtle">
           Belum ada menu. Tambahkan menu pertama kamu.
         </p>
       </div>
@@ -221,11 +221,11 @@ onMounted(loadData)
         <div
           v-for="(menu, index) in menus"
           :key="menu.id"
-          class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
+          class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
           :style="{ animationDelay: `${Math.min(index, 8) * 0.06}s` }"
         >
           <div
-            class="flex h-full flex-col gap-3 rounded-[1.625rem] bg-white p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]"
+            class="flex h-full flex-col gap-3 rounded-[1.625rem] bg-card p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
           >
             <div class="relative overflow-hidden rounded-[1.125rem]">
               <img
@@ -242,23 +242,23 @@ onMounted(loadData)
             </div>
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0">
-                <h2 class="truncate font-bold text-secondary">{{ menu.name }}</h2>
-                <p class="text-xs text-secondary/40">{{ menu.category?.name ?? '-' }}</p>
+                <h2 class="truncate font-bold text-ink">{{ menu.name }}</h2>
+                <p class="text-xs text-subtle">{{ menu.category?.name ?? '-' }}</p>
               </div>
             </div>
-            <p class="line-clamp-2 text-sm text-secondary/60">{{ menu.description }}</p>
+            <p class="line-clamp-2 text-sm text-muted">{{ menu.description }}</p>
             <p class="text-lg font-extrabold text-primary-dark">{{ formatRupiah(menu.price) }}</p>
 
             <div class="mt-auto flex gap-2 pt-1">
               <button
                 @click="openEditModal(menu)"
-                class="flex-1 rounded-full py-2 text-sm font-semibold text-secondary ring-1 ring-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+                class="flex-1 rounded-full py-2 text-sm font-semibold text-ink ring-1 ring-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
               >
                 Edit
               </button>
               <button
                 @click="handleDelete(menu)"
-                class="flex-1 rounded-full bg-red-50 py-2 text-sm font-semibold text-red-500 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+                class="flex-1 rounded-full bg-red-500/10 py-2 text-sm font-semibold text-red-600 dark:text-red-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
               >
                 Hapus
               </button>
@@ -274,7 +274,7 @@ onMounted(loadData)
     >
       <form
         @submit.prevent="handleSubmit"
-        class="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-[2rem] bg-white p-7 shadow-[0_40px_80px_-30px_rgba(18,18,18,0.5)]"
+        class="flex max-h-[90vh] w-full max-w-md flex-col gap-4 overflow-y-auto rounded-[2rem] bg-card p-7 shadow-[0_40px_80px_-30px_rgba(18,18,18,0.5)]"
       >
         <div>
           <span
@@ -282,7 +282,7 @@ onMounted(loadData)
           >
             {{ isEditing ? 'Edit' : 'Baru' }}
           </span>
-          <h2 class="mt-2 text-xl font-bold text-secondary">
+          <h2 class="mt-2 text-xl font-bold text-ink">
             {{ isEditing ? 'Edit Menu' : 'Tambah Menu' }}
           </h2>
         </div>
@@ -291,78 +291,78 @@ onMounted(loadData)
           <img
             :src="photoPreview || photoUrl(currentPhotoPath)"
             alt="Preview"
-            class="h-16 w-16 rounded-2xl object-cover ring-1 ring-secondary/10"
+            class="h-16 w-16 rounded-2xl object-cover ring-1 ring-ink/10"
           />
           <div class="flex min-w-0 flex-1 flex-col gap-1">
-            <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Foto Menu</label>
+            <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Foto Menu</label>
             <FileUploadButton label="Pilih Foto" accept="image/*" @change="handlePhotoChange" />
-            <p v-if="formErrors.photo" class="text-xs text-red-500">{{ formErrors.photo[0] }}</p>
+            <p v-if="formErrors.photo" class="text-xs text-red-600 dark:text-red-400">{{ formErrors.photo[0] }}</p>
           </div>
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Kategori</label>
+          <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Kategori</label>
           <select
             v-model="categoryId"
-            class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+            class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="" disabled>Pilih kategori</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
           </select>
-          <p v-if="formErrors.category_id" class="text-xs text-red-500">
+          <p v-if="formErrors.category_id" class="text-xs text-red-600 dark:text-red-400">
             {{ formErrors.category_id[0] }}
           </p>
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Nama Menu</label>
+          <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Nama Menu</label>
           <input
             v-model="name"
             type="text"
-            class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+            class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <p v-if="formErrors.name" class="text-xs text-red-500">{{ formErrors.name[0] }}</p>
+          <p v-if="formErrors.name" class="text-xs text-red-600 dark:text-red-400">{{ formErrors.name[0] }}</p>
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Deskripsi</label>
+          <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Deskripsi</label>
           <textarea
             v-model="description"
             rows="3"
-            class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+            class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
           ></textarea>
-          <p v-if="formErrors.description" class="text-xs text-red-500">
+          <p v-if="formErrors.description" class="text-xs text-red-600 dark:text-red-400">
             {{ formErrors.description[0] }}
           </p>
         </div>
 
         <div class="flex flex-col gap-1">
-          <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Harga per Porsi</label>
-          <div class="flex items-center gap-2 rounded-2xl bg-secondary/[0.04] px-4 py-2.5 focus-within:ring-2 focus-within:ring-primary">
-            <span class="text-sm text-secondary/40">Rp</span>
+          <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">Harga per Porsi</label>
+          <div class="flex items-center gap-2 rounded-2xl bg-ink/[0.04] px-4 py-2.5 focus-within:ring-2 focus-within:ring-primary">
+            <span class="text-sm text-subtle">Rp</span>
             <input
               v-model="priceDisplay"
               type="text"
               inputmode="numeric"
               placeholder="0"
-              class="w-full bg-transparent text-sm text-secondary focus:outline-none"
+              class="w-full bg-transparent text-sm text-ink focus:outline-none"
             />
           </div>
-          <p v-if="formErrors.price" class="text-xs text-red-500">{{ formErrors.price[0] }}</p>
+          <p v-if="formErrors.price" class="text-xs text-red-600 dark:text-red-400">{{ formErrors.price[0] }}</p>
         </div>
 
-        <label class="flex items-center gap-2 text-sm text-secondary/70">
+        <label class="flex items-center gap-2 text-sm text-muted">
           <input v-model="isAvailable" type="checkbox" class="h-4 w-4 accent-primary" />
           Menu tersedia
         </label>
 
-        <p v-if="formError" class="text-sm text-red-500">{{ formError }}</p>
+        <p v-if="formError" class="text-sm text-red-600 dark:text-red-400">{{ formError }}</p>
 
         <div class="flex gap-2 pt-1">
           <button
             type="button"
             @click="closeModal"
-            class="flex-1 rounded-full py-2.5 text-sm font-semibold text-secondary/70 ring-1 ring-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+            class="flex-1 rounded-full py-2.5 text-sm font-semibold text-muted ring-1 ring-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
           >
             Batal
           </button>

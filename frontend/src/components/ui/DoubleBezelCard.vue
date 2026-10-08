@@ -17,10 +17,10 @@ defineProps({
 
 <template>
   <div
-    :class="['rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5', { 'animate-fade-up': animate }]"
+    :class="['rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5', { 'animate-fade-up': animate }]"
     :style="{ animationDelay: delay }"
   >
-    <div :class="['rounded-[1.625rem] bg-white', padding]">
+    <div :class="['rounded-[1.625rem] bg-card', padding]">
       <slot />
     </div>
   </div>

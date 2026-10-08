@@ -137,7 +137,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <PageHeader eyebrow="Portal Kantor" title="Checkout">
@@ -152,7 +152,7 @@ onMounted(() => {
           >
             Keranjang
           </span>
-          <h2 class="mt-2 mb-4 text-xl font-bold text-secondary">
+          <h2 class="mt-2 mb-4 text-xl font-bold text-ink">
             {{ cartMerchant?.company_name }}
           </h2>
 
@@ -160,34 +160,34 @@ onMounted(() => {
             <div
               v-for="item in cartItems"
               :key="item.menu_id"
-              class="flex items-center justify-between gap-3 rounded-xl bg-secondary/[0.03] px-4 py-3"
+              class="flex items-center justify-between gap-3 rounded-xl bg-ink/[0.03] px-4 py-3"
             >
               <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-medium text-secondary">{{ item.name }}</p>
-                <p class="text-xs text-secondary/40">{{ formatRupiah(item.price) }} / porsi</p>
+                <p class="truncate text-sm font-medium text-ink">{{ item.name }}</p>
+                <p class="text-xs text-subtle">{{ formatRupiah(item.price) }} / porsi</p>
               </div>
               <input
                 type="number"
                 min="1"
                 :value="item.quantity"
                 @change="handleQuantityChange(item.menu_id, $event.target.value)"
-                class="w-16 rounded-xl bg-white px-2 py-1.5 text-center text-sm text-secondary ring-1 ring-secondary/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-16 rounded-xl bg-card px-2 py-1.5 text-center text-sm text-ink ring-1 ring-ink/10 focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <p class="w-24 shrink-0 text-right text-sm font-semibold text-secondary">
+              <p class="w-24 shrink-0 text-right text-sm font-semibold text-ink">
                 {{ formatRupiah(item.price * item.quantity) }}
               </p>
               <button
                 @click="removeFromCart(item.menu_id)"
-                class="shrink-0 text-xs font-medium text-red-500 hover:underline"
+                class="shrink-0 text-xs font-medium text-red-600 dark:text-red-400 hover:underline"
               >
                 Hapus
               </button>
             </div>
           </div>
 
-          <div class="mt-4 flex items-center justify-between border-t border-secondary/5 pt-4">
-            <span class="text-sm font-medium text-secondary/50">Total</span>
-            <span class="text-xl font-extrabold text-secondary">{{ formatRupiah(cartTotal) }}</span>
+          <div class="mt-4 flex items-center justify-between border-t border-ink/5 pt-4">
+            <span class="text-sm font-medium text-subtle">Total</span>
+            <span class="text-xl font-extrabold text-ink">{{ formatRupiah(cartTotal) }}</span>
           </div>
         </DoubleBezelCard>
 
@@ -201,7 +201,7 @@ onMounted(() => {
             </span>
 
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Tanggal Pengiriman
               </label>
               <input
@@ -209,13 +209,13 @@ onMounted(() => {
                 type="date"
                 :min="minDate"
                 required
-                class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div class="flex flex-col gap-1">
               <div class="flex items-center justify-between">
-                <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+                <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                   Alamat Pengiriman
                 </label>
                 <button
@@ -248,23 +248,23 @@ onMounted(() => {
                 rows="3"
                 required
                 placeholder="Ketik alamat, atau pakai tombol lokasi di atas"
-                class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>
-              <p v-if="locationError" class="text-xs text-red-500">{{ locationError }}</p>
+              <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">{{ locationError }}</p>
             </div>
 
             <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
                 Catatan (opsional)
               </label>
               <textarea
                 v-model="notes"
                 rows="2"
-                class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
               ></textarea>
             </div>
 
-            <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
+            <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 
             <button
               type="submit"

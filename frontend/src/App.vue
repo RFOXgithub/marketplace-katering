@@ -6,6 +6,7 @@ import PixelSwap from '@/components/animations/PixelSwap.vue'
 import LightRays from '@/components/animations/LightRays.vue'
 import CartConflictModal from '@/components/customer/CartConflictModal.vue'
 import ClickSpark from '@/components/animations/ClickSpark.vue'
+import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 
 const isSwapped = ref(false)
 const fadeOut = ref(false)
@@ -50,6 +51,7 @@ onMounted(() => {
   </div>
 
   <CartConflictModal />
+  <ThemeToggle />
 
   <div v-if="showSplash" class="splash" :class="{ 'splash-fade-out': fadeOut }">
     <PixelSwap

@@ -49,7 +49,7 @@ function goToLogin() {
       </div>
     </div>
 
-    <div class="relative flex w-full items-center justify-center bg-[#fbfaf8] p-6 md:w-1/3">
+    <div class="relative flex w-full items-center justify-center bg-panel p-6 md:w-1/3">
       <div
         class="pointer-events-none absolute inset-0 overflow-hidden"
         style="
@@ -64,7 +64,7 @@ function goToLogin() {
       <div class="animate-fade-up relative w-full max-w-[280px]">
         <div class="mb-8 flex items-center gap-2.5">
           <img src="/logo-mark.svg" alt="logo" class="h-8 w-8" />
-          <span class="text-sm font-bold text-secondary">Marketplace Katering</span>
+          <span class="text-sm font-bold text-ink">Marketplace Katering</span>
         </div>
 
         <span
@@ -72,15 +72,15 @@ function goToLogin() {
         >
           Daftar Akun
         </span>
-        <h1 class="mt-3 text-2xl font-extrabold text-secondary">
+        <h1 class="mt-3 text-2xl font-extrabold text-ink">
           <ScrambleText text="Mulai Sekarang" />
         </h1>
-        <p class="mt-1.5 mb-7 text-sm text-secondary/50">Isi data berikut untuk membuat akun</p>
+        <p class="mt-1.5 mb-7 text-sm text-subtle">Isi data berikut untuk membuat akun</p>
 
         <RegisterForm :loading="isLoading" @submit="handleRegister" />
-        <p v-if="errorMessage" class="mt-3 text-xs text-red-500">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="mt-3 text-xs text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 
-        <p class="mt-7 text-center text-sm text-secondary/50">
+        <p class="mt-7 text-center text-sm text-subtle">
           Sudah punya akun?
           <RouterLink to="/login" class="font-semibold text-primary-dark hover:text-primary">
             Masuk di sini

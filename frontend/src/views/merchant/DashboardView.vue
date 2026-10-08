@@ -41,7 +41,7 @@ const STATUS_CLASS = {
   confirmed: 'bg-primary/10 text-primary-dark',
   delivered: 'bg-primary/10 text-primary-dark',
   completed: 'bg-accent/10 text-accent',
-  cancelled: 'bg-secondary/10 text-secondary/50',
+  cancelled: 'bg-ink/10 text-subtle',
 }
 
 const NAV_LINKS = [
@@ -85,7 +85,7 @@ onMounted(loadDashboard)
 </script>
 
 <template>
-  <div class="relative min-h-[100dvh] overflow-x-clip bg-[#f7f5f2]">
+  <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
     <!-- floating island nav -->
@@ -118,7 +118,7 @@ onMounted(loadDashboard)
           >
             Logout
             <span
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
+              class="flex h-6 w-6 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -135,22 +135,22 @@ onMounted(loadDashboard)
       <!-- loading skeleton -->
       <div v-if="isLoading" class="flex flex-col gap-5">
         <div class="grid grid-cols-1 gap-5 md:grid-cols-4 md:auto-rows-[9rem]">
-          <div class="rounded-[2rem] bg-secondary/5 p-2 md:col-span-2 md:row-span-2">
-            <div class="h-full rounded-[1.625rem] bg-white p-6">
+          <div class="rounded-[2rem] bg-ink/5 p-2 md:col-span-2 md:row-span-2">
+            <div class="h-full rounded-[1.625rem] bg-card p-6">
               <Skeleton width="50%" height="0.75rem" />
               <Skeleton width="35%" height="2.5rem" rounded="0.5rem" class="mt-4" />
             </div>
           </div>
-          <div v-for="i in 2" :key="i" class="rounded-[2rem] bg-secondary/5 p-2 md:col-span-2">
-            <div class="h-full rounded-[1.625rem] bg-white p-6">
+          <div v-for="i in 2" :key="i" class="rounded-[2rem] bg-ink/5 p-2 md:col-span-2">
+            <div class="h-full rounded-[1.625rem] bg-card p-6">
               <Skeleton width="50%" height="0.75rem" />
               <Skeleton width="30%" height="1.75rem" rounded="0.5rem" class="mt-3" />
             </div>
           </div>
         </div>
 
-        <div class="rounded-[2rem] bg-secondary/5 p-2">
-          <div class="rounded-[1.625rem] bg-white p-6">
+        <div class="rounded-[2rem] bg-ink/5 p-2">
+          <div class="rounded-[1.625rem] bg-card p-6">
             <Skeleton width="25%" height="0.875rem" class="mb-4" />
             <div class="flex flex-col gap-3">
               <div v-for="i in 5" :key="i" class="flex items-center gap-4">
@@ -164,7 +164,7 @@ onMounted(loadDashboard)
         </div>
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-500">
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">
         {{ errorMessage }}
       </p>
 
@@ -173,7 +173,7 @@ onMounted(loadDashboard)
         <div class="grid grid-cols-1 gap-5 md:grid-cols-4 md:auto-rows-[9rem]">
           <!-- featured tile: double-bezel, dark, spans 2x2 -->
           <div
-            class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5 md:col-span-2 md:row-span-2"
+            class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5 md:col-span-2 md:row-span-2"
           >
             <SpotlightCard
               class="flex h-full flex-col justify-between rounded-[1.625rem] border-0 bg-secondary p-7 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
@@ -195,18 +195,18 @@ onMounted(loadDashboard)
 
           <!-- small tile -->
           <div
-            class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5 md:col-span-2"
+            class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5 md:col-span-2"
             style="animation-delay: 0.08s"
           >
             <SpotlightCard
-              class="flex h-full items-center justify-between rounded-[1.625rem] border-0 bg-white p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]"
+              class="flex h-full items-center justify-between rounded-[1.625rem] border-0 bg-card p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
               spotlight-color="rgba(245, 166, 35, 0.12)"
             >
               <div>
-                <p class="text-xs font-medium uppercase tracking-[0.1em] text-secondary/40">
+                <p class="text-xs font-medium uppercase tracking-[0.1em] text-subtle">
                   Total Menu
                 </p>
-                <p class="mt-2 text-3xl font-extrabold text-secondary">
+                <p class="mt-2 text-3xl font-extrabold text-ink">
                   <CountUp :to="totalMenu" :duration="1" />
                 </p>
               </div>
@@ -215,18 +215,18 @@ onMounted(loadDashboard)
 
           <!-- small tile -->
           <div
-            class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5 md:col-span-2"
+            class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5 md:col-span-2"
             style="animation-delay: 0.16s"
           >
             <SpotlightCard
-              class="flex h-full items-center justify-between rounded-[1.625rem] border-0 bg-white p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]"
+              class="flex h-full items-center justify-between rounded-[1.625rem] border-0 bg-card p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
               spotlight-color="rgba(245, 166, 35, 0.12)"
             >
               <div>
-                <p class="text-xs font-medium uppercase tracking-[0.1em] text-secondary/40">
+                <p class="text-xs font-medium uppercase tracking-[0.1em] text-subtle">
                   Invoice Belum Lunas
                 </p>
-                <p class="mt-2 text-3xl font-extrabold text-secondary">
+                <p class="mt-2 text-3xl font-extrabold text-ink">
                   <CountUp :to="unpaidInvoices" :duration="1" />
                 </p>
               </div>
@@ -243,11 +243,11 @@ onMounted(loadDashboard)
               >
                 Aktivitas Terbaru
               </span>
-              <h2 class="mt-2 text-xl font-bold text-secondary">Order Terbaru</h2>
+              <h2 class="mt-2 text-xl font-bold text-ink">Order Terbaru</h2>
             </div>
           </div>
 
-          <p v-if="recentOrders.length === 0" class="text-sm text-secondary/40">
+          <p v-if="recentOrders.length === 0" class="text-sm text-subtle">
             Belum ada order masuk.
           </p>
 
@@ -260,18 +260,18 @@ onMounted(loadDashboard)
           >
             <template #default="{ item: order }">
               <div
-                class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-secondary/5 bg-white p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
+                class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-ink/5 bg-card p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
               >
-                <span class="flex-1 truncate font-medium text-secondary">
+                <span class="flex-1 truncate font-medium text-ink">
                   {{ order.customer?.office_name ?? '-' }}
                 </span>
-                <span class="hidden text-secondary/40 sm:block">
+                <span class="hidden text-subtle sm:block">
                   {{ formatDate(order.delivery_date) }}
                 </span>
-                <span class="font-semibold text-secondary">{{ formatRupiah(order.total_amount) }}</span>
+                <span class="font-semibold text-ink">{{ formatRupiah(order.total_amount) }}</span>
                 <StatusBadge :status="order.status" :labels="STATUS_LABEL" :classes="STATUS_CLASS" />
                 <span
-                  class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary/5 text-secondary/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
+                  class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink/5 text-subtle transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12" />

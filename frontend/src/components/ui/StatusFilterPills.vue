@@ -22,8 +22,8 @@ const emit = defineEmits(['update:modelValue'])
       class="rounded-full px-4 py-2 text-sm font-medium transition-[transform,background-color,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
       :class="
         modelValue === filter.value
-          ? 'bg-secondary text-white'
-          : 'bg-white text-secondary/60 ring-1 ring-secondary/10'
+          ? 'bg-ink text-page'
+          : 'bg-card text-muted ring-1 ring-ink/10'
       "
     >
       {{ filter.label }}

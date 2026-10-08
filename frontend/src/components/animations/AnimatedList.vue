@@ -22,11 +22,11 @@
     </div>
     <template v-if="showGradients">
       <div
-        class="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-gray-50 to-transparent transition-opacity duration-300 ease"
+        class="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-card to-transparent transition-opacity duration-300 ease"
         :style="{ opacity: topGradientOpacity }"
       />
       <div
-        class="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-gray-50 to-transparent transition-opacity duration-300 ease"
+        class="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-card to-transparent transition-opacity duration-300 ease"
         :style="{ opacity: bottomGradientOpacity }"
       />
     </template>
