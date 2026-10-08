@@ -18,7 +18,7 @@ class EnsureUserHasRole
 
         $user = $request->user();
 
-        if (! $user || in_array($user->role, $roles, true)) {
+        if (! $user || ! in_array($user->role, $roles, true)) {
             return response()->json([
                 'message' => 'Anda tidak memiliki akses untuk resource ini.',
             ], 403);

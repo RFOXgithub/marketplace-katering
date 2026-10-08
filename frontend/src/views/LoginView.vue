@@ -13,8 +13,12 @@ async function handleLogin(credentials) {
   errorMessage.value = ''
   isLoading.value = true
   try {
-    await login(credentials)
-    router.push('/')
+    const data = await login(credentials)
+    if (data.user.role === 'merchant') {
+      router.push('/merchant/dashboard')
+    } else {
+      router.push('/customer/home')
+    }
   } catch (e) {
     errorMessage.value = e.message
   } finally {
