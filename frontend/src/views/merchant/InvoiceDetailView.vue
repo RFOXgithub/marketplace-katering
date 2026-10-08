@@ -21,8 +21,8 @@ const STATUS_LABEL = {
 
 const STATUS_CLASS = {
   unpaid: 'bg-primary/10 text-primary-dark',
-  paid: 'bg-green-100 text-green-700',
-  cancelled: 'bg-gray-100 text-gray-500',
+  paid: 'bg-accent/10 text-accent',
+  cancelled: 'bg-secondary/10 text-secondary/50',
 }
 
 function formatRupiah(value) {
@@ -75,111 +75,144 @@ onMounted(loadInvoice)
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <header class="flex items-center justify-between bg-secondary px-6 py-4 text-white">
-      <div>
-        <p class="text-xs text-gray-400">Portal Merchant</p>
-        <h1 class="text-lg font-bold text-primary">Detail Invoice</h1>
-      </div>
-      <button
-        @click="router.push('/merchant/invoices')"
-        class="rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium transition hover:border-primary hover:text-primary"
+  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+    <div
+      class="pointer-events-none fixed inset-0 z-0"
+      style="
+        background:
+          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
+          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
+      "
+    />
+
+    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
+      <div
+        class="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
       >
-        Kembali
-      </button>
+        <div class="min-w-0">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+            Portal Merchant
+          </p>
+          <h1 class="truncate text-base font-bold text-primary sm:text-lg">Detail Invoice</h1>
+        </div>
+
+        <button
+          @click="router.push('/merchant/invoices')"
+          class="group flex items-center gap-2 rounded-full border border-white/15 py-1.5 pr-4 pl-1.5 text-sm font-medium text-white/70 transition-[transform,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
+        >
+          <span
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+          </span>
+          Kembali
+        </button>
+      </div>
     </header>
 
-    <main class="p-6">
-      <div v-if="isLoading" class="mx-auto flex max-w-2xl flex-col gap-4">
-        <Skeleton width="100%" height="8rem" rounded="0.75rem" />
-        <Skeleton width="100%" height="10rem" rounded="0.75rem" />
+    <main class="relative z-10 mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div v-if="isLoading" class="flex flex-col gap-5">
+        <Skeleton width="100%" height="9rem" rounded="2rem" />
+        <Skeleton width="100%" height="11rem" rounded="2rem" />
       </div>
 
       <p v-else-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
 
-      <div v-else-if="invoice" class="mx-auto flex max-w-2xl flex-col gap-4">
-        <div class="rounded-xl border border-gray-200 bg-white p-5">
-          <div class="mb-3 flex items-center justify-between">
-            <h2 class="font-bold text-secondary">{{ invoice.invoice_number }}</h2>
-            <span
-              class="rounded-full px-3 py-1 text-xs font-medium"
-              :class="STATUS_CLASS[invoice.status]"
-            >
-              {{ STATUS_LABEL[invoice.status] ?? invoice.status }}
-            </span>
-          </div>
-          <dl class="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-            <div>
-              <dt class="text-gray-500">Kantor</dt>
-              <dd class="font-medium text-gray-800">
-                {{ invoice.order?.customer?.office_name ?? '-' }}
-              </dd>
-            </div>
-            <div>
-              <dt class="text-gray-500">Tanggal Terbit</dt>
-              <dd class="font-medium text-gray-800">{{ formatDate(invoice.issued_at) }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500">Jatuh Tempo</dt>
-              <dd class="font-medium text-gray-800">{{ formatDate(invoice.due_date) }}</dd>
-            </div>
-            <div v-if="invoice.paid_at">
-              <dt class="text-gray-500">Dibayar Pada</dt>
-              <dd class="font-medium text-gray-800">{{ formatDate(invoice.paid_at) }}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div class="rounded-xl border border-gray-200 bg-white p-5">
-          <h2 class="mb-3 text-sm font-semibold text-gray-700">Item Pesanan</h2>
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-gray-200 text-gray-500">
-                <th class="py-2 pr-4">Menu</th>
-                <th class="py-2 pr-4">Harga</th>
-                <th class="py-2 pr-4">Jumlah</th>
-                <th class="py-2">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="item in invoice.order?.items"
-                :key="item.id"
-                class="border-b border-gray-100 last:border-0"
+      <div v-else-if="invoice" class="flex flex-col gap-5">
+        <div class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
+          <div class="rounded-[1.625rem] bg-white p-6 sm:p-7">
+            <div class="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <span
+                  class="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+                >
+                  Invoice
+                </span>
+                <h2 class="mt-2 text-xl font-bold text-secondary">{{ invoice.invoice_number }}</h2>
+              </div>
+              <span
+                class="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em]"
+                :class="STATUS_CLASS[invoice.status]"
               >
-                <td class="py-2 pr-4">{{ item.menu_name }}</td>
-                <td class="py-2 pr-4">{{ formatRupiah(item.price) }}</td>
-                <td class="py-2 pr-4">{{ item.quantity }}</td>
-                <td class="py-2">{{ formatRupiah(item.subtotal) }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="mt-3 flex justify-end text-sm font-bold text-secondary">
-            Total: {{ formatRupiah(invoice.total_amount) }}
+                {{ STATUS_LABEL[invoice.status] ?? invoice.status }}
+              </span>
+            </div>
+            <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Kantor</dt>
+                <dd class="mt-1 font-medium text-secondary">
+                  {{ invoice.order?.customer?.office_name ?? '-' }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+                  Tanggal Terbit
+                </dt>
+                <dd class="mt-1 font-medium text-secondary">{{ formatDate(invoice.issued_at) }}</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+                  Jatuh Tempo
+                </dt>
+                <dd class="mt-1 font-medium text-secondary">{{ formatDate(invoice.due_date) }}</dd>
+              </div>
+              <div v-if="invoice.paid_at">
+                <dt class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">
+                  Dibayar Pada
+                </dt>
+                <dd class="mt-1 font-medium text-secondary">{{ formatDate(invoice.paid_at) }}</dd>
+              </div>
+            </dl>
           </div>
         </div>
 
         <div
-          v-if="invoice.status === 'unpaid'"
-          class="rounded-xl border border-gray-200 bg-white p-5"
+          class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
+          style="animation-delay: 0.08s"
         >
-          <button
-            :disabled="isUpdating"
-            @click="handleMarkPaid"
-            class="flex w-full items-center justify-center rounded-lg bg-primary py-2 text-sm font-bold text-secondary transition hover:bg-primary-dark disabled:opacity-60"
-          >
-            <LatticeLoader
-              v-if="isUpdating"
-              label="Memproses"
-              status="working"
-              :show-timer="false"
-              color="currentColor"
-              :cell-size="5"
-              font-size="13"
-            />
-            <span v-else>Tandai Lunas</span>
-          </button>
+          <div class="rounded-[1.625rem] bg-white p-6 sm:p-7">
+            <h2 class="mb-4 text-xs font-semibold uppercase tracking-[0.1em] text-secondary/40">
+              Item Pesanan
+            </h2>
+            <div class="flex flex-col gap-2">
+              <div
+                v-for="item in invoice.order?.items"
+                :key="item.id"
+                class="flex items-center justify-between gap-4 rounded-xl bg-secondary/[0.03] px-4 py-3 text-sm"
+              >
+                <span class="flex-1 font-medium text-secondary">{{ item.menu_name }}</span>
+                <span class="text-secondary/50">{{ formatRupiah(item.price) }} × {{ item.quantity }}</span>
+                <span class="font-semibold text-secondary">{{ formatRupiah(item.subtotal) }}</span>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between border-t border-secondary/5 pt-4">
+              <span class="text-sm font-medium text-secondary/50">Total</span>
+              <span class="text-xl font-extrabold text-secondary">{{ formatRupiah(invoice.total_amount) }}</span>
+            </div>
+          </div>
         </div>
+
+        <button
+          v-if="invoice.status === 'unpaid'"
+          :disabled="isUpdating"
+          @click="handleMarkPaid"
+          class="animate-fade-up flex items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-60"
+          style="animation-delay: 0.16s"
+        >
+          <LatticeLoader
+            v-if="isUpdating"
+            label="Memproses"
+            status="working"
+            :show-timer="false"
+            color="currentColor"
+            :cell-size="5"
+            font-size="13"
+          />
+          <span v-else>Tandai Lunas</span>
+        </button>
       </div>
     </main>
   </div>
