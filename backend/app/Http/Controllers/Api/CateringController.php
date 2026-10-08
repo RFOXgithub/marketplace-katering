@@ -26,7 +26,24 @@ class CateringController extends Controller
             });
         }
 
+        // Note: a per-relation limit() here would cap the whole eager-load
+        // query at 1 row total (not 1 per merchant), so every available
+        // photo is fetched and the first one is picked in PHP below instead.
+        $query->with(['menus' => function ($menuQuery) {
+            $menuQuery->where('is_available', true)
+                ->whereNotNull('photo_path')
+                ->select('id', 'merchant_id', 'photo_path')
+                ->orderBy('id');
+        }]);
+
         $merchants = $query->paginate(10);
+
+        $merchants->getCollection()->transform(function ($merchant) {
+            $merchant->cover_photo = $merchant->menus->first()->photo_path ?? null;
+            unset($merchant->menus);
+
+            return $merchant;
+        });
 
         return response()->json($merchants);
     }

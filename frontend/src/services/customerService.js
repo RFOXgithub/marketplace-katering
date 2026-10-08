@@ -12,6 +12,10 @@ export function getCategories() {
   return authFetch('/categories')
 }
 
+export function getCities() {
+  return authFetch('/cities')
+}
+
 export function updateCustomerProfile(payload) {
   return authFetch('/customer/profile', {
     method: 'PUT',
@@ -52,4 +56,28 @@ export function getCustomerInvoices(query = '') {
 
 export function getCustomerInvoice(id) {
   return authFetch(`/customer/invoices/${id}`)
+}
+
+export function submitOrderReview(orderId, payload) {
+  return authFetch(`/customer/orders/${orderId}/review`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function getFavoriteMerchantIds() {
+  return authFetch('/customer/favorites')
+}
+
+export function addFavorite(merchantId) {
+  return authFetch(`/customer/favorites/${merchantId}`, {
+    method: 'POST',
+  })
+}
+
+export function removeFavorite(merchantId) {
+  return authFetch(`/customer/favorites/${merchantId}`, {
+    method: 'DELETE',
+  })
 }

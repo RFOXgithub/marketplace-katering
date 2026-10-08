@@ -12,6 +12,10 @@ export function getMerchantMenus(query = '') {
   return authFetch(`/merchant/menus${query}`)
 }
 
+export function getMerchantDashboardStats() {
+  return authFetch('/merchant/dashboard-stats')
+}
+
 export function getMerchantOrders(query = '') {
   return authFetch(`/merchant/orders${query}`)
 }

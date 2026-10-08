@@ -24,7 +24,7 @@ class MerchantOrderController extends Controller
         $merchant = $request->user()->merchant;
 
         $query = Order::where('merchant_id', $merchant->id)
-            ->with(['customer', 'items'])
+            ->with(['customer', 'items.menu:id,photo_path'])
             ->latest();
 
         if ($request->filled('status')) {

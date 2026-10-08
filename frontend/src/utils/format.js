@@ -15,6 +15,14 @@ export function formatDate(value) {
   })
 }
 
+export function formatTime(value) {
+  if (!value) return '-'
+  return new Date(value).toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 export function titleCase(value) {
   if (!value) return value
   return value

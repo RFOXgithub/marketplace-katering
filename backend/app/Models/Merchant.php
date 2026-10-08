@@ -16,11 +16,19 @@ class Merchant extends Model
         'contact_email',
         'description',
         'logo_path',
+        'min_order_pax',
+        'total_orders',
+        'rating_avg',
+        'rating_count',
         'is_active',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'min_order_pax' => 'integer',
+        'total_orders' => 'integer',
+        'rating_avg' => 'decimal:1',
+        'rating_count' => 'integer',
     ];
 
     public function user()
@@ -36,5 +44,15 @@ class Merchant extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function favoritedBy()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }

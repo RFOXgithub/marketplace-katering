@@ -35,6 +35,8 @@ const cityOptions = computed(() => {
 const contactPhone = ref('')
 const contactEmail = ref('')
 const description = ref('')
+const minOrderPax = ref(10)
+const totalOrders = ref(0)
 const isActive = ref(true)
 const logoFile = ref(null)
 const logoPreview = ref('')
@@ -47,6 +49,8 @@ function populateForm(merchant) {
   contactPhone.value = merchant.contact_phone ?? ''
   contactEmail.value = merchant.contact_email ?? ''
   description.value = merchant.description ?? ''
+  minOrderPax.value = merchant.min_order_pax ?? 10
+  totalOrders.value = merchant.total_orders ?? 0
   isActive.value = Boolean(merchant.is_active)
   currentLogoPath.value = merchant.logo_path ?? ''
 }
@@ -155,6 +159,7 @@ async function handleSubmit() {
     formData.append('contact_phone', contactPhone.value)
     formData.append('contact_email', contactEmail.value)
     formData.append('description', description.value)
+    formData.append('min_order_pax', minOrderPax.value)
     formData.append('is_active', isActive.value ? '1' : '0')
     if (logoFile.value) {
       formData.append('logo', logoFile.value)
@@ -343,6 +348,35 @@ onMounted(loadProfile)
               class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
             ></textarea>
             <p v-if="errors.description" class="text-xs text-red-600 dark:text-red-400">{{ errors.description[0] }}</p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                Minimal Pesanan (pax)
+              </label>
+              <input
+                v-model.number="minOrderPax"
+                type="number"
+                min="1"
+                max="1000"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <p v-if="errors.min_order_pax" class="text-xs text-red-600 dark:text-red-400">
+                {{ errors.min_order_pax[0] }}
+              </p>
+              <p class="text-xs text-subtle">Jumlah pax minimum yang kamu layani untuk satu pesanan.</p>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                Total Pesanan Masuk
+              </label>
+              <div class="flex h-[2.6875rem] items-center rounded-2xl bg-ink/[0.04] px-4 text-sm font-semibold text-ink">
+                {{ totalOrders }} pesanan
+              </div>
+              <p class="text-xs text-subtle">Terhitung otomatis dari pesanan yang masuk, tidak bisa diubah manual.</p>
+            </div>
           </div>
 
           <label

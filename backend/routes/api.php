@@ -4,10 +4,12 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CateringController;
 use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\CustomerFavoriteController;
 use App\Http\Controllers\Api\CustomerInvoiceController;
 use App\Http\Controllers\Api\CustomerOrderController;
 use App\Http\Controllers\Api\CustomerProfileController;
 use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\MerchantDashboardController;
 use App\Http\Controllers\Api\MerchantInvoiceController;
 use App\Http\Controllers\Api\MerchantOrderController;
 use App\Http\Controllers\Api\MerchantProfileController;
@@ -31,6 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profile', [MerchantProfileController::class, 'show']);
         Route::put('/profile', [MerchantProfileController::class, 'update']);
 
+        Route::get('/dashboard-stats', [MerchantDashboardController::class, 'stats']);
+
         Route::apiResource('menus', MenuController::class);
 
         Route::get('/orders', [MerchantOrderController::class, 'index']);
@@ -51,8 +55,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/orders', [CustomerOrderController::class, 'index']);
         Route::get('/orders/{order}', [CustomerOrderController::class, 'show']);
         Route::patch('/orders/{order}/cancel', [CustomerOrderController::class, 'cancel']);
+        Route::post('/orders/{order}/review', [CustomerOrderController::class, 'review']);
 
         Route::get('/invoices', [CustomerInvoiceController::class, 'index']);
         Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show']);
+
+        Route::get('/favorites', [CustomerFavoriteController::class, 'index']);
+        Route::post('/favorites/{merchant}', [CustomerFavoriteController::class, 'store']);
+        Route::delete('/favorites/{merchant}', [CustomerFavoriteController::class, 'destroy']);
     });
 });

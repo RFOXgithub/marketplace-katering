@@ -27,6 +27,7 @@ class MerchantProfileController extends Controller
             'contact_phone' => ['sometimes', 'required', 'string', 'max:20'],
             'contact_email' => ['nullable', 'email', 'max:255'],
             'description' => ['nullable', 'string'],
+            'min_order_pax' => ['sometimes', 'required', 'integer', 'min:1', 'max:1000'],
             'is_active' => ['sometimes', 'boolean'],
             'logo' => ['nullable', 'image', 'max:2048'],
         ]);

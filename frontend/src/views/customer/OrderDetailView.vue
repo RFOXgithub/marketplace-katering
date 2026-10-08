@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { getCustomerOrder, cancelCustomerOrder } from '@/services/customerService'
+import { getCustomerOrder, cancelCustomerOrder, submitOrderReview } from '@/services/customerService'
 import { formatRupiah, formatDate } from '@/utils/format'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import CartButton from '@/components/customer/CartButton.vue'
@@ -19,6 +19,12 @@ const isCancelling = ref(false)
 const errorMessage = ref('')
 const order = ref(null)
 const showCancelModal = ref(false)
+
+const reviewRating = ref(0)
+const reviewHoverRating = ref(0)
+const reviewComment = ref('')
+const isSubmittingReview = ref(false)
+const reviewError = ref('')
 
 const STATUS_LABEL = {
   pending: 'Menunggu',
@@ -60,6 +66,27 @@ async function confirmCancel() {
     errorMessage.value = e.message
   } finally {
     isCancelling.value = false
+  }
+}
+
+async function submitReview() {
+  if (reviewRating.value < 1) {
+    reviewError.value = 'Pilih jumlah bintang dulu ya.'
+    return
+  }
+
+  isSubmittingReview.value = true
+  reviewError.value = ''
+  try {
+    await submitOrderReview(order.value.id, {
+      rating: reviewRating.value,
+      comment: reviewComment.value || null,
+    })
+    await loadOrder()
+  } catch (e) {
+    reviewError.value = e.message
+  } finally {
+    isSubmittingReview.value = false
   }
 }
 
@@ -153,6 +180,78 @@ onMounted(loadOrder)
             >
               {{ order.invoice.status }}
             </span>
+          </div>
+        </DoubleBezelCard>
+
+        <DoubleBezelCard v-if="order.status === 'completed'" delay="0.2s">
+          <div v-if="order.review">
+            <h2 class="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-subtle">
+              Rating Kamu
+            </h2>
+            <div class="flex items-center gap-1">
+              <svg
+                v-for="n in 5"
+                :key="n"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                :fill="n <= order.review.rating ? 'currentColor' : 'none'"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="text-primary"
+              >
+                <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z" />
+              </svg>
+            </div>
+            <p v-if="order.review.comment" class="mt-2 text-sm text-ink">{{ order.review.comment }}</p>
+            <p class="mt-2 text-xs text-subtle">Terima kasih sudah memberi rating untuk katering ini.</p>
+          </div>
+
+          <div v-else>
+            <h2 class="mb-2 text-xs font-semibold uppercase tracking-[0.1em] text-subtle">
+              Beri Rating Katering Ini
+            </h2>
+            <div class="flex items-center gap-1" @mouseleave="reviewHoverRating = 0">
+              <button
+                v-for="n in 5"
+                :key="n"
+                type="button"
+                :aria-label="`${n} bintang`"
+                class="p-0.5"
+                @mouseenter="reviewHoverRating = n"
+                @click="reviewRating = n"
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  :fill="n <= (reviewHoverRating || reviewRating) ? 'currentColor' : 'none'"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  class="text-primary transition-transform duration-150 hover:scale-110"
+                >
+                  <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z" />
+                </svg>
+              </button>
+            </div>
+
+            <textarea
+              v-model="reviewComment"
+              rows="3"
+              placeholder="Ceritakan pengalaman kamu dengan katering ini (opsional)"
+              class="mt-3 w-full rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
+            ></textarea>
+
+            <p v-if="reviewError" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ reviewError }}</p>
+
+            <button
+              type="button"
+              :disabled="isSubmittingReview"
+              @click="submitReview"
+              class="mt-3 flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-70"
+            >
+              {{ isSubmittingReview ? 'Mengirim...' : 'Kirim Rating' }}
+            </button>
           </div>
         </DoubleBezelCard>
 

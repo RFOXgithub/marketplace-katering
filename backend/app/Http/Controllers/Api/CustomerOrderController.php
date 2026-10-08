@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\Menu;
+use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -88,6 +90,8 @@ class CustomerOrderController extends Controller
                 'status' => 'unpaid',
             ]);
 
+            Merchant::where('id', $data['merchant_id'])->increment('total_orders');
+
             return $order;
         });
 
@@ -119,8 +123,64 @@ class CustomerOrderController extends Controller
         $this->authorizeOrder($request, $order);
 
         return response()->json([
-            'data' => $order->load(['merchant', 'items.menu', 'invoice']),
+            'data' => $order->load(['merchant', 'items.menu', 'invoice', 'review']),
         ]);
+    }
+
+    public function review(Request $request, Order $order)
+    {
+        $this->authorizeOrder($request, $order);
+
+        if ($order->status !== 'completed') {
+            return response()->json([
+                'message' => 'Hanya order yang sudah selesai yang bisa diberi rating.',
+            ], 422);
+        }
+
+        if ($order->review()->exists()) {
+            return response()->json([
+                'message' => 'Order ini sudah pernah diberi rating.',
+            ], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Data yang dikirim tidak valid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $data = $validator->validated();
+
+        $review = DB::transaction(function () use ($data, $order) {
+            $review = Review::create([
+                'order_id' => $order->id,
+                'customer_id' => $order->customer_id,
+                'merchant_id' => $order->merchant_id,
+                'rating' => $data['rating'],
+                'comment' => $data['comment'] ?? null,
+            ]);
+
+            $merchant = Merchant::where('id', $order->merchant_id)->lockForUpdate()->first();
+            $newCount = $merchant->rating_count + 1;
+            $newAvg = (($merchant->rating_avg * $merchant->rating_count) + $data['rating']) / $newCount;
+            $merchant->update([
+                'rating_avg' => round($newAvg, 1),
+                'rating_count' => $newCount,
+            ]);
+
+            return $review;
+        });
+
+        return response()->json([
+            'message' => 'Terima kasih atas rating kamu.',
+            'data' => $review,
+        ], 201);
     }
 
     public function cancel(Request $request, Order $order)

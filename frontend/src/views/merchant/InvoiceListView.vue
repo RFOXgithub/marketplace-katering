@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getMerchantInvoices } from '@/services/merchantService'
 import { formatRupiah, formatDate } from '@/utils/format'
 import Skeleton from '@/components/animations/Skeleton.vue'
@@ -13,12 +13,15 @@ import StatusBadge from '@/components/ui/StatusBadge.vue'
 import StatusFilterPills from '@/components/ui/StatusFilterPills.vue'
 import Pagination from '@/components/ui/Pagination.vue'
 
+const route = useRoute()
 const router = useRouter()
+
+const VALID_STATUSES = ['unpaid', 'paid', 'cancelled']
 
 const isLoading = ref(true)
 const errorMessage = ref('')
 const invoices = ref([])
-const statusFilter = ref('')
+const statusFilter = ref(VALID_STATUSES.includes(route.query.status) ? route.query.status : '')
 const currentPage = ref(1)
 const lastPage = ref(1)
 const total = ref(0)
