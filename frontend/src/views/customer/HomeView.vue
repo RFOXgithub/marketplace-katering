@@ -81,19 +81,31 @@ onMounted(handleInit)
           {{ customer?.office_name ?? 'Memuat...' }}
         </h1>
       </div>
-      <button
-        @click="handleLogout"
-        class="rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium transition hover:border-primary hover:text-primary"
-      >
-        Logout
-      </button>
+      <nav class="flex items-center gap-3">
+        <RouterLink
+          to="/customer/profile"
+          class="text-sm font-medium text-gray-300 transition hover:text-primary"
+        >
+          Profil
+        </RouterLink>
+        <button
+          @click="handleLogout"
+          class="rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium transition hover:border-primary hover:text-primary"
+        >
+          Logout
+        </button>
+      </nav>
     </header>
 
     <main class="p-6">
       <div v-if="isLoading" class="flex flex-col gap-6">
         <Skeleton width="100%" height="3rem" rounded="0.75rem" />
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div v-for="i in 6" :key="i" class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5">
+          <div
+            v-for="i in 6"
+            :key="i"
+            class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5"
+          >
             <Skeleton width="60%" height="1rem" />
             <Skeleton width="30%" height="0.75rem" />
             <Skeleton width="100%" height="0.75rem" class="mt-1" />
@@ -142,7 +154,11 @@ onMounted(handleInit)
         </form>
 
         <div v-if="isSearching" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div v-for="i in 6" :key="i" class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5">
+          <div
+            v-for="i in 6"
+            :key="i"
+            class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5"
+          >
             <Skeleton width="60%" height="1rem" />
             <Skeleton width="30%" height="0.75rem" />
             <Skeleton width="100%" height="0.75rem" class="mt-1" />
@@ -158,7 +174,8 @@ onMounted(handleInit)
           <div
             v-for="catering in caterings"
             :key="catering.id"
-            class="flex flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-primary"
+            @click="router.push(`/caterings/${catering.slug}`)"
+            class="flex cursor-pointer flex-col gap-2 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-primary"
           >
             <h2 class="font-bold text-secondary">{{ catering.company_name }}</h2>
             <p class="text-xs text-gray-500">{{ catering.city }}</p>

@@ -9,6 +9,9 @@ import OrderDetailView from '@/views/merchant/OrderDetailView.vue'
 import InvoiceListView from '@/views/merchant/InvoiceListView.vue'
 import InvoiceDetailView from '@/views/merchant/InvoiceDetailView.vue'
 import CustomerHomeView from '@/views/customer/HomeView.vue'
+import CustomerProfileView from '@/views/customer/ProfileView.vue'
+import CateringDetailView from '@/views/customer/CateringDetailView.vue'
+
 import { getToken, getUser } from '@/services/authService'
 
 const router = createRouter({
@@ -67,6 +70,16 @@ const router = createRouter({
       path: '/customer/home',
       component: CustomerHomeView,
       meta: { order: 3, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/profile',
+      component: CustomerProfileView,
+      meta: { order: 4, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/caterings/:slug',
+      component: CateringDetailView,
+      meta: { order: 5, requiresAuth: true, role: 'customer' },
     },
   ],
 })
