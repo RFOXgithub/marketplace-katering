@@ -1,14 +1,28 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import router from '@/router'
 import TrueFocus from '@/components/animations/TrueFokus.vue'
 import PixelSwap from '@/components/animations/PixelSwap.vue'
 import LightRays from '@/components/animations/LightRays.vue'
 
 const isSwapped = ref(false)
-const showSplash = ref(true)
 const fadeOut = ref(false)
+const transitionName = ref('slide-left')
+
+const hasSeenSplash = sessionStorage.getItem('hasSeenSplash')
+const showSplash = ref(!hasSeenSplash)
+
+router.beforeEach((to, from) => {
+  const toOrder = to.meta.order ?? 0
+  const fromOrder = from.meta.order ?? 0
+  transitionName.value = toOrder < fromOrder ? 'slide-right' : 'slide-left'
+})
 
 onMounted(() => {
+  if (!showSplash.value) return
+
+  sessionStorage.setItem('hasSeenSplash', 'true')
+
   setTimeout(() => {
     isSwapped.value = true
   }, 4000)
@@ -24,7 +38,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <RouterView />
+  <div class="page-wrapper">
+    <RouterView v-slot="{ Component, route }">
+      <Transition :name="transitionName">
+        <component :is="Component" :key="route.path" />
+      </Transition>
+    </RouterView>
+  </div>
 
   <div v-if="showSplash" class="splash" :class="{ 'splash-fade-out': fadeOut }">
     <PixelSwap

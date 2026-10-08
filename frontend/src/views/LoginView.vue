@@ -7,21 +7,25 @@ import ScrambleText from '@/components/animations/ScrambleText.vue'
 
 const router = useRouter()
 const errorMessage = ref('')
+const isLoading = ref(false)
 
 async function handleLogin(credentials) {
   errorMessage.value = ''
+  isLoading.value = true
   try {
     await login(credentials)
     router.push('/')
   } catch (e) {
     errorMessage.value = e.message
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
 
 <template>
   <main class="flex min-h-screen">
-    <div class="hidden md:block w-2/3 h-screen">
+    <div class="hidden md:block w-2/3 h-full">
       <img src="/login.png" alt="loginIlustrasi" class="w-full h-full object-cover" />
     </div>
 
@@ -32,7 +36,7 @@ async function handleLogin(credentials) {
         <p class="mb-4 text-xs text-gray-500">
           <ScrambleText text="Silahkan memasukan data untuk masuk" />
         </p>
-        <LoginForm />
+        <LoginForm :loading="isLoading" @submit="handleLogin" />
         <p v-if="errorMessage" class="mt-3 text-xs text-red-400">{{ errorMessage }}</p>
         <p class="pt-3 text-center text-xs text-gray-500">
           Anda belum memiliki akun?

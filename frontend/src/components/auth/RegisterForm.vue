@@ -1,9 +1,19 @@
 <script setup>
 import { ref } from 'vue'
 import InputField from './InputField.vue'
+import RubberSegment from '@/components/animations/RubberSegment.vue'
+import LatticeLoader from '@/components/animations/LatticeLoader.vue'
+
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const emit = defineEmits(['submit'])
 
+const role = ref('customer')
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -21,12 +31,13 @@ function validate() {
 }
 
 function handelSubmit() {
-  if (validate) {
+  if (validate()) {
     emit('submit', {
       name: name.value,
       email: email.value,
       password: password.value,
-      password_confirmation: passwordConfirmation,
+      password_confirmation: passwordConfirmation.value,
+      role: role.value,
     })
   }
 }
@@ -34,6 +45,32 @@ function handelSubmit() {
 
 <template>
   <form @submit.prevent="handelSubmit" class="flex flex-col gap-4">
+    <div class="flex flex-col gap-1.5">
+      <h2 class="text-sm font-medium text-gray-700">Pilih Role Anda</h2>
+      <RubberSegment
+        :items="[
+          { value: 'customer', label: 'Customer' },
+          { value: 'merchant', label: 'Merchant' },
+        ]"
+        :value="role"
+        trackColor="var(--color-secondary)"
+        thumbColor="var(--color-primary)"
+        textColor="#ffffff"
+        activeTextColor="var(--color-secondary)"
+        size="md"
+        :radius="10"
+        :inset="3"
+        equalSlots
+        :stretch="100"
+        :squash="3"
+        :speed="1"
+        :glide="75"
+        draggable
+        ariaLabel="Role"
+        className="border border-gray-200"
+        @change="(value, index) => (role = value)"
+      />
+    </div>
     <InputField
       v-model="name"
       label="Name"
@@ -64,9 +101,19 @@ function handelSubmit() {
     ></InputField>
     <button
       type="submit"
-      class="rounded-lg bg-primary hover:bg-primary-dark py-2 font-bold text-secondary transition"
+      :disabled="loading"
+      class="flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark py-2 font-bold text-secondary transition disabled:opacity-70 disabled:cursor-not-allowed"
     >
-      Daftar
+      <LatticeLoader
+        v-if="loading"
+        label="Memproses"
+        status="working"
+        :show-timer="false"
+        color="currentColor"
+        :cell-size="5"
+        font-size="13"
+      />
+      <span v-else>Daftar</span>
     </button>
   </form>
 </template>

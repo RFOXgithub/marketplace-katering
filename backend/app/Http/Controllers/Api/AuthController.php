@@ -23,16 +23,16 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' => ['nullable', 'string', 'max:20'],
             'role' => ['required', Rule::in(['merchant', 'customer'])],
+            'address' => ['nullable', 'string'],
+            'city' => ['nullable', 'string', 'max:100'],
+            'contact_phone' => ['nullable', 'string', 'max:20'],
 
             // role = merchant
-            'company_name' => ['required_if:role,merchant', 'string', 'max:255'],
-            'address' => ['required', 'string'],
-            'city' => ['required', 'string', 'max:100'],
-            'contact_phone' => ['required', 'string', 'max:20'],
+            'company_name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
 
             // role = customer
-            'office_name' => ['required_if:role,customer', 'string', 'max:255'],
+            'office_name' => ['nullable', 'string', 'max:255'],
             'pic_name' => ['nullable', 'string', 'max:255'],
         ]);
 
@@ -55,13 +55,15 @@ class AuthController extends Controller
             ]);
 
             if ($data['role'] === 'merchant') {
+                $companyName = $data['company_name'] ?? $data['name'];
+
                 Merchant::create([
                     'user_id' => $user->id,
-                    'company_name' => $data['company_name'],
-                    'slug' => Str::slug($data['company_name']).'-'.Str::random(5),
-                    'address' => $data['address'],
-                    'city' => $data['city'],
-                    'contact_phone' => $data['contact_phone'],
+                    'company_name' => $companyName,
+                    'slug' => Str::slug($companyName).'-'.Str::random(5),
+                    'address' => $data['address'] ?? null,
+                    'city' => $data['city'] ?? null,
+                    'contact_phone' => $data['contact_phone'] ?? null,
                     'email' => $data['email'],
                     'description' => $data['description'] ?? null,
                     'is_active' => true,
@@ -69,10 +71,10 @@ class AuthController extends Controller
             } else {
                 Customer::create([
                     'user_id' => $user->id,
-                    'office_name' => $data['office_name'],
-                    'address' => $data['address'],
-                    'city' => $data['city'],
-                    'contact_phone' => $data['contact_phone'],
+                    'office_name' => $data['office_name'] ?? $data['name'],
+                    'address' => $data['address'] ?? null,
+                    'city' => $data['city'] ?? null,
+                    'contact_phone' => $data['contact_phone'] ?? null,
                     'pic_name' => $data['pic_name'] ?? null,
                 ]);
             }
@@ -80,7 +82,7 @@ class AuthController extends Controller
             return $user;
         });
 
-        $token = $user->createToken('auth_token')->plaintextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'Registrasi berhasil',
@@ -107,7 +109,7 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Emai; atau passowrd salah',
+                'message' => 'Email atau passowrd salah',
             ], 401);
         }
 

@@ -1,6 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import InputField from './InputField.vue'
+import LatticeLoader from '@/components/animations/LatticeLoader.vue'
+
+defineProps({
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const emit = defineEmits(['submit'])
 
@@ -16,7 +24,7 @@ function validate() {
 }
 
 function handelSubmit() {
-  if (validate) {
+  if (validate()) {
     emit('submit', {
       email: email.value,
       password: password.value,
@@ -41,6 +49,21 @@ function handelSubmit() {
       type="password"
       :error="errors.password"
     ></InputField>
-    <button type="submit" class="rounded-lg bg-primary hover:bg-primary-dark py-2 font-bold text-secondary transition">Masuk</button>
+    <button
+      type="submit"
+      :disabled="loading"
+      class="flex items-center justify-center rounded-lg bg-primary hover:bg-primary-dark py-2 font-bold text-secondary transition disabled:opacity-70 disabled:cursor-not-allowed"
+    >
+      <LatticeLoader
+        v-if="loading"
+        label="Memproses"
+        status="working"
+        :show-timer="false"
+        color="currentColor"
+        :cell-size="5"
+        font-size="13"
+      />
+      <span v-else>Masuk</span>
+    </button>
   </form>
 </template>
