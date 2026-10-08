@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getMerchantInvoices } from '@/services/merchantService'
-import { resolveStorageUrl } from '@/services/http'
+import { getOrderThumbnail } from '@/utils/orderDisplay'
 import { formatRupiah, formatDate } from '@/utils/format'
 import { INVOICE_STATUS_LABEL, INVOICE_STATUS_CLASS, INVOICE_STATUS_DOT_CLASS, INVOICE_STATUS_FILTERS } from '@/constants/status'
 import Skeleton from '@/components/animations/Skeleton.vue'
@@ -35,16 +35,8 @@ const filtersWithCount = computed(() => {
   }))
 })
 
-function photoUrl(path) {
-  return resolveStorageUrl(path)
-}
-
 function getThumbnail(invoice) {
-  const items = invoice.order?.items ?? []
-  for (const item of items) {
-    if (item.menu?.photo_path) return photoUrl(item.menu.photo_path)
-  }
-  return null
+  return getOrderThumbnail(invoice.order ?? {})
 }
 
 async function loadInvoices(page = 1) {

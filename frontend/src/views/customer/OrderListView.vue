@@ -2,7 +2,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCustomerOrders } from '@/services/customerService'
-import { resolveStorageUrl } from '@/services/http'
+import {
+  getOrderMenuSummary as getMenuSummary,
+  getOrderThumbnail as getThumbnail,
+  getOrderTotalPax as getTotalPax,
+} from '@/utils/orderDisplay'
 import { formatRupiah, formatDate } from '@/utils/format'
 import { ORDER_STATUS_LABEL, ORDER_STATUS_CLASS, ORDER_STATUS_DOT_CLASS, ORDER_STATUS_FILTERS } from '@/constants/status'
 import Skeleton from '@/components/animations/Skeleton.vue'
@@ -32,33 +36,6 @@ const filtersWithCount = computed(() => {
     count: statusCounts.value[filter.value] ?? 0,
   }))
 })
-
-function getMenuSummary(order) {
-  const items = order.items ?? []
-  if (!items.length) return order.notes ?? ''
-  const names = items.map((i) => i.menu_name).filter(Boolean)
-  if (!names.length) return order.notes ?? ''
-  const joined = names.join(', ')
-  return joined.charAt(0).toUpperCase() + joined.slice(1) + '.'
-}
-
-function photoUrl(path) {
-  return resolveStorageUrl(path)
-}
-
-function getThumbnail(order) {
-  const items = order.items ?? []
-  for (const item of items) {
-    if (item.menu?.photo_path) return photoUrl(item.menu.photo_path)
-  }
-  return null
-}
-
-function getTotalPax(order) {
-  const items = order.items ?? []
-  if (!items.length) return order.pax_count ?? null
-  return items.reduce((sum, i) => sum + (i.quantity ?? 0), 0) || null
-}
 
 async function loadOrders(page = 1) {
   isLoading.value = true

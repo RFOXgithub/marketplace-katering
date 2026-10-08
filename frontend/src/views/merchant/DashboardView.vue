@@ -16,6 +16,7 @@ import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import { resolveStorageUrl } from '@/services/http'
 import { formatRupiah, formatDate, formatTime, titleCase } from '@/utils/format'
+import { ORDER_STATUS_LABEL, ORDER_STATUS_CLASS } from '@/constants/status'
 
 function photoUrl(path) {
   return resolveStorageUrl(path)
@@ -35,22 +36,6 @@ const monthlyMenuCounts = ref([0, 0, 0, 0, 0, 0])
 const totalInvoices = ref(0)
 const unpaidInvoices = ref(0)
 const recentOrders = ref([])
-
-const STATUS_LABEL = {
-  pending: 'Menunggu',
-  confirmed: 'Dikonfirmasi',
-  delivered: 'Dikirim',
-  completed: 'Selesai',
-  cancelled: 'Dibatalkan',
-}
-
-const STATUS_CLASS = {
-  pending: 'bg-primary/10 text-primary-dark',
-  confirmed: 'bg-primary/10 text-primary-dark',
-  delivered: 'bg-primary/10 text-primary-dark',
-  completed: 'bg-accent/10 text-accent',
-  cancelled: 'bg-ink/10 text-subtle',
-}
 
 const NAV_LINKS = [
   { to: '/merchant/orders', label: 'Order' },
@@ -682,8 +667,8 @@ onMounted(loadDashboard)
 
                 <StatusBadge
                   :status="order.status"
-                  :labels="STATUS_LABEL"
-                  :classes="STATUS_CLASS"
+                  :labels="ORDER_STATUS_LABEL"
+                  :classes="ORDER_STATUS_CLASS"
                 />
 
                 <span

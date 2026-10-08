@@ -5,12 +5,11 @@ import { logout } from '@/services/authService'
 import {
   getCustomerProfile,
   searchCaterings,
-  getCategories,
-  getCities,
   getFavoriteMerchantIds,
   addFavorite,
   removeFavorite,
 } from '@/services/customerService'
+import { getCategories, getCities } from '@/services/referenceService'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import CartButton from '@/components/customer/CartButton.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'

@@ -11,6 +11,7 @@
     "build:css": "npx @tailwindcss/cli -i app.css -o public/output.css"
   },
   "dependencies": {
+    "@hugeicons/core-free-icons": "^4.3.5",
     "@hugeicons/vue": "^1.0.8",
     "@tailwindcss/vite": "^4.3.3",
     "gsap": "^3.15.0",

@@ -8,14 +8,6 @@ export function searchCaterings(query = '') {
   return authFetch(`/caterings${query}`)
 }
 
-export function getCategories() {
-  return authFetch('/categories')
-}
-
-export function getCities() {
-  return authFetch('/cities')
-}
-
 export function updateCustomerProfile(payload) {
   return authFetch('/customer/profile', {
     method: 'PUT',

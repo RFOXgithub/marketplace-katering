@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCustomerProfile, createOrder } from '@/services/customerService'
-import { reverseGeocode } from '@/services/geocodingService'
+import { useCurrentLocation } from '@/composables/useCurrentLocation'
 import {
   cartItems,
   cartMerchant,
@@ -25,9 +25,7 @@ const router = useRouter()
 
 const isLoading = ref(true)
 const isSubmitting = ref(false)
-const isLocating = ref(false)
 const errorMessage = ref('')
-const locationError = ref('')
 const isSuccess = ref(false)
 const successSummary = ref(null)
 
@@ -40,6 +38,11 @@ const minDate = (() => {
   tomorrow.setDate(tomorrow.getDate() + 1)
   return tomorrow.toISOString().split('T')[0]
 })()
+
+const { isLocating, locationError, locate } = useCurrentLocation({
+  permissionDenied: 'Izin lokasi ditolak. Kamu masih bisa mengetik alamat secara manual.',
+  locateFailed: 'Gagal mendapatkan lokasi. Coba lagi atau ketik alamat secara manual.',
+})
 
 async function loadProfile() {
   isLoading.value = true
@@ -57,38 +60,15 @@ function handleQuantityChange(menuId, value) {
   updateQuantity(menuId, Number(value))
 }
 
-function useCurrentLocation() {
-  locationError.value = ''
-
-  if (!navigator.geolocation) {
-    locationError.value = 'Browser kamu tidak mendukung deteksi lokasi.'
-    return
-  }
-
-  isLocating.value = true
-
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const { latitude, longitude } = position.coords
-      try {
-        const data = await reverseGeocode(latitude, longitude)
-        deliveryAddress.value = data.display_name ?? `${latitude}, ${longitude}`
-      } catch {
-        locationError.value = 'Gagal mengambil nama alamat. Koordinat tetap disimpan manual.'
-        deliveryAddress.value = `${latitude}, ${longitude}`
-      } finally {
-        isLocating.value = false
-      }
+function useCurrentLocationForAddress() {
+  locate({
+    onResolved: (address) => {
+      deliveryAddress.value = address
     },
-    (error) => {
-      isLocating.value = false
-      if (error.code === error.PERMISSION_DENIED) {
-        locationError.value = 'Izin lokasi ditolak. Kamu masih bisa mengetik alamat secara manual.'
-      } else {
-        locationError.value = 'Gagal mendapatkan lokasi. Coba lagi atau ketik alamat secara manual.'
-      }
+    onFallback: (coords) => {
+      deliveryAddress.value = coords
     },
-  )
+  })
 }
 
 async function handleSubmit() {
@@ -227,7 +207,7 @@ onMounted(() => {
                 <button
                   type="button"
                   :disabled="isLocating"
-                  @click="useCurrentLocation"
+                  @click="useCurrentLocationForAddress"
                   class="group flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-dark transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-60"
                 >
                   <svg

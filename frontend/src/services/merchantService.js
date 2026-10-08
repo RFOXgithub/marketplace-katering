@@ -4,14 +4,6 @@ export function getMerchantProfile() {
   return authFetch('/merchant/profile')
 }
 
-export function getCities() {
-  return authFetch('/cities')
-}
-
-export function getMerchantMenus(query = '') {
-  return authFetch(`/merchant/menus${query}`)
-}
-
 export function getMerchantDashboardStats() {
   return authFetch('/merchant/dashboard-stats')
 }

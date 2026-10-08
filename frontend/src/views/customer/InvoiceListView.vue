@@ -34,13 +34,9 @@ const filtersWithCount = computed(() => {
   }))
 })
 
-function photoUrl(path) {
-  return resolveStorageUrl(path)
-}
-
 function getThumbnail(invoice) {
   if (brokenLogoIds.value.has(invoice.id)) return null
-  return photoUrl(invoice.order?.merchant?.logo_path)
+  return resolveStorageUrl(invoice.order?.merchant?.logo_path)
 }
 
 function markLogoBroken(invoiceId) {

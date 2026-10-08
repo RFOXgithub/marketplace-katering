@@ -107,7 +107,9 @@ class TestAccountSeeder extends Seeder
                 'description' => 'Akun merchant khusus untuk testing fitur, berisi menu dan pesanan contoh.',
                 'logo_path' => $this->seedMerchantLogo(),
                 'min_order_pax' => 10,
-                'total_orders' => 10,
+                // Kept above every merchant seeded by MerchantSeeder (max 120) so this
+                // test account always sorts first under the default "Terpopuler" order.
+                'total_orders' => 999,
                 'rating_avg' => 4.5,
                 'rating_count' => 2,
                 'is_active' => true,

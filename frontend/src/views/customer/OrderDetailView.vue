@@ -13,6 +13,7 @@ import BackButton from '@/components/ui/BackButton.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import StarRating from '@/components/ui/StarRating.vue'
+import PeekRating from '@/components/animations/PeekRating.vue'
 
 const route = useRoute()
 
@@ -23,7 +24,6 @@ const order = ref(null)
 const showCancelModal = ref(false)
 
 const reviewRating = ref(0)
-const reviewHoverRating = ref(0)
 const reviewComment = ref('')
 const isSubmittingReview = ref(false)
 const reviewError = ref('')
@@ -191,29 +191,15 @@ onMounted(loadOrder)
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z"/></svg>
               Beri Rating Katering Ini
             </h2>
-            <div class="flex items-center gap-1" @mouseleave="reviewHoverRating = 0">
-              <button
-                v-for="n in 5"
-                :key="n"
-                type="button"
-                :aria-label="`${n} bintang`"
-                class="p-0.5"
-                @mouseenter="reviewHoverRating = n"
-                @click="reviewRating = n"
-              >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  :fill="n <= (reviewHoverRating || reviewRating) ? 'currentColor' : 'none'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  class="text-primary-dark transition-transform duration-150 hover:scale-110"
-                >
-                  <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z" />
-                </svg>
-              </button>
-            </div>
+            <PeekRating
+              :value="reviewRating"
+              :size="26"
+              :allow-clear="false"
+              active-color="var(--color-primary-dark)"
+              idle-color="var(--color-subtle)"
+              aria-label="Rating katering"
+              @change="reviewRating = $event"
+            />
 
             <textarea
               v-model="reviewComment"

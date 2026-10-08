@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getMenus, getCategories, createMenu, updateMenu, deleteMenu } from '@/services/menuService'
+import { getMenus, createMenu, updateMenu, deleteMenu } from '@/services/menuService'
+import { getCategories } from '@/services/referenceService'
 import { resolveStorageUrl } from '@/services/http'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'

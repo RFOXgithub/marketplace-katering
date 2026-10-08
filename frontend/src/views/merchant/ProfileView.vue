@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { getMerchantProfile, updateMerchantProfile, getCities } from '@/services/merchantService'
-import { reverseGeocode } from '@/services/geocodingService'
+import { getMerchantProfile, updateMerchantProfile } from '@/services/merchantService'
+import { getCities } from '@/services/referenceService'
+import { useCurrentLocation } from '@/composables/useCurrentLocation'
+import { matchCityFromAddress } from '@/utils/city'
 import { resolveStorageUrl } from '@/services/http'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
 import FileUploadButton from '@/components/ui/FileUploadButton.vue'
@@ -15,9 +17,7 @@ import FormField from '@/components/ui/FormField.vue'
 
 const isLoading = ref(true)
 const isSaving = ref(false)
-const isLocating = ref(false)
 const errorMessage = ref('')
-const locationError = ref('')
 const successMessage = ref('')
 const errors = ref({})
 const cities = ref([])
@@ -69,69 +69,25 @@ async function loadProfile() {
   }
 }
 
-function matchCityFromAddress(addressParts) {
-  const candidates = [
-    addressParts.city,
-    addressParts.town,
-    addressParts.municipality,
-    addressParts.county,
-    addressParts.city_district,
-    addressParts.suburb,
-  ].filter(Boolean)
+const { isLocating, locationError, locate } = useCurrentLocation()
 
-  for (const candidate of candidates) {
-    const normalized = candidate.replace(/^(Kota|Kabupaten)\s+/i, '').trim().toLowerCase()
-    const match = cities.value.find(
-      (c) =>
-        c.name.toLowerCase() === normalized ||
-        c.name.toLowerCase().replace(/^(kota|kabupaten)\s+/i, '') === normalized,
-    )
-    if (match) return match.name
-  }
+function useCurrentLocationForAddress() {
+  locate({
+    onResolved: (resolvedAddress, addressParts) => {
+      address.value = resolvedAddress
 
-  return null
-}
-
-function useCurrentLocation() {
-  locationError.value = ''
-
-  if (!navigator.geolocation) {
-    locationError.value = 'Browser kamu tidak mendukung deteksi lokasi.'
-    return
-  }
-
-  isLocating.value = true
-
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const { latitude, longitude } = position.coords
-      try {
-        const data = await reverseGeocode(latitude, longitude)
-        address.value = data.display_name ?? `${latitude}, ${longitude}`
-
-        const matchedCity = matchCityFromAddress(data.address ?? {})
-        if (matchedCity) {
-          city.value = matchedCity
-        } else {
-          locationError.value =
-            'Alamat terisi otomatis, tapi kota tidak cocok dengan daftar. Pilih kota secara manual.'
-        }
-      } catch {
-        locationError.value = 'Gagal mengambil nama alamat. Koordinat tetap disimpan manual.'
-        address.value = `${latitude}, ${longitude}`
-      } finally {
-        isLocating.value = false
-      }
-    },
-    (error) => {
-      isLocating.value = false
-      if (error.code === error.PERMISSION_DENIED) {
-        locationError.value = 'Izin lokasi ditolak. Kamu masih bisa mengisi alamat secara manual.'
+      const matchedCity = matchCityFromAddress(addressParts, cities.value)
+      if (matchedCity) {
+        city.value = matchedCity
       } else {
-        locationError.value = 'Gagal mendapatkan lokasi. Coba lagi atau isi alamat secara manual.'
+        locationError.value =
+          'Alamat terisi otomatis, tapi kota tidak cocok dengan daftar. Pilih kota secara manual.'
       }
     },
-  )
+    onFallback: (coords) => {
+      address.value = coords
+    },
+  })
 }
 
 function handleLogoChange(event) {
@@ -267,7 +223,7 @@ onMounted(loadProfile)
               <button
                 type="button"
                 :disabled="isLocating"
-                @click="useCurrentLocation"
+                @click="useCurrentLocationForAddress"
                 class="group flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-dark transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-60"
               >
                 <svg

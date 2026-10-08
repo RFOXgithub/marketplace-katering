@@ -4,10 +4,6 @@ export function getMenus(query = '') {
   return authFetch(`/merchant/menus${query}`)
 }
 
-export function getCategories() {
-  return authFetch('/categories')
-}
-
 export function createMenu(formData) {
   return authFetch('/merchant/menus', {
     method: 'POST',
