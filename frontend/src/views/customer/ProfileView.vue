@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { getCustomerProfile, updateCustomerProfile } from '@/services/customerService'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
@@ -10,7 +9,6 @@ import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 
-const router = useRouter()
 
 const isLoading = ref(true)
 const isSaving = ref(false)

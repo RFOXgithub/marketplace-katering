@@ -11,7 +11,7 @@ import {
   clearCart,
 } from '@/services/cartStore'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
-import SpotlightCard from '@/components/animations/SpotlightCard.vue'
+import PaymentSuccessModal from '@/components/ui/PaymentSuccessModal.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
@@ -26,6 +26,7 @@ const isLocating = ref(false)
 const errorMessage = ref('')
 const locationError = ref('')
 const isSuccess = ref(false)
+const successSummary = ref(null)
 
 const deliveryDate = ref('')
 const deliveryAddress = ref('')
@@ -107,6 +108,16 @@ async function handleSubmit() {
       })),
     })
 
+    const [first] = cartItems.value
+    successSummary.value = {
+      name: first.name,
+      quantity: first.quantity,
+      price: first.price,
+      extra: cartItems.value.length - 1,
+      total: cartTotal.value,
+      date: deliveryDate.value,
+      address: deliveryAddress.value,
+    }
     clearCart()
     isSuccess.value = true
   } catch (e) {
@@ -134,46 +145,7 @@ onMounted(() => {
     </PageHeader>
 
     <main class="relative z-10 mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-      <div v-if="isSuccess" class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
-        <SpotlightCard
-          class="rounded-[1.625rem] border-0 bg-secondary p-8 text-center"
-          spotlight-color="rgba(245, 166, 35, 0.25)"
-        >
-          <span
-            class="mx-auto w-max rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary"
-          >
-            Berhasil
-          </span>
-          <h2 class="mt-3 text-xl font-extrabold text-white">Pesanan Berhasil Dibuat!</h2>
-          <p class="mt-2 mb-6 text-sm text-white/50">
-            Pesanan kamu sudah dikirim ke katering. Invoice akan muncul setelah dikonfirmasi.
-          </p>
-          <div class="flex flex-col gap-2">
-            <button
-              @click="router.push('/customer/orders')"
-              class="group flex items-center justify-center gap-2 rounded-full bg-primary py-3 pr-2 pl-5 font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98]"
-            >
-              Lihat Riwayat Order
-              <span
-                class="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
-              >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-            </button>
-            <button
-              @click="router.push('/customer/home')"
-              class="rounded-full py-3 text-sm font-medium text-white/60 ring-1 ring-white/15 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
-            >
-              Kembali ke Beranda
-            </button>
-          </div>
-        </SpotlightCard>
-      </div>
-
-      <div v-else class="flex flex-col gap-5">
+      <div class="flex flex-col gap-5">
         <DoubleBezelCard>
           <span
             class="w-max rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
@@ -315,5 +287,17 @@ onMounted(() => {
         </form>
       </div>
     </main>
+    <PaymentSuccessModal
+      :model-value="isSuccess"
+      :summary="successSummary"
+      title="Pesanan"
+      highlight="Berhasil Dibuat!"
+      message="Pesanan Anda sudah dikirim ke katering. Invoice akan muncul setelah dikonfirmasi."
+      note="Terima kasih! Pesanan Anda akan segera diproses."
+      secondary-label="Kembali ke Beranda"
+      @primary="router.push('/customer/orders')"
+      @secondary="router.push('/customer/home')"
+      @update:model-value="router.push('/customer/orders')"
+    />
   </div>
 </template>

@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { getMerchantOrder, updateMerchantOrderStatus } from '@/services/merchantService'
 import { formatRupiah, formatDate } from '@/utils/format'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
-import ConfirmModal from '@/components/ui/ConfirmModal.vue'
+import CancelOrderModal from '@/components/ui/CancelOrderModal.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
@@ -13,7 +13,6 @@ import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 
 const route = useRoute()
-const router = useRouter()
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
@@ -212,12 +211,10 @@ onMounted(loadOrder)
       </div>
     </main>
 
-    <ConfirmModal
+    <CancelOrderModal
       v-model="showCancelModal"
-      title="Batalkan Order?"
-      message="Order ini akan dibatalkan dan customer akan diberi tahu."
-      confirm-label="Ya, Batalkan"
-      danger
+      :order="order"
+      note="Customer akan diberi tahu bahwa pesanan ini dibatalkan."
       :loading="isUpdating"
       @confirm="submitStatusChange('cancelled')"
     />

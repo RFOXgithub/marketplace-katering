@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
 import { register } from '@/services/authService'
 import ScrambleText from '@/components/animations/ScrambleText.vue'
-import SpotlightCard from '@/components/animations/SpotlightCard.vue'
+import RegisterSuccessModal from '@/components/ui/RegisterSuccessModal.vue'
 
 const router = useRouter()
 const errorMessage = ref('')
@@ -90,48 +90,9 @@ function goToLogin() {
     </div>
   </main>
 
-  <div
-    v-if="showSuccessModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-secondary/60 p-4 backdrop-blur-sm"
-  >
-    <SpotlightCard
-      class="w-full max-w-sm rounded-[2rem] border-0 bg-secondary p-2 shadow-[0_40px_80px_-30px_rgba(18,18,18,0.5)]"
-      spotlight-color="rgba(245, 166, 35, 0.25)"
-    >
-      <div class="rounded-[1.625rem] p-7 text-center">
-        <span
-          class="mx-auto w-max rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary"
-        >
-          Berhasil
-        </span>
-        <h2 class="mt-3 text-xl font-extrabold text-white">Registrasi Berhasil!</h2>
-        <p class="mt-2 mb-6 text-sm text-white/50">
-          Akun kamu sudah dibuat. Silakan login untuk melanjutkan.
-        </p>
-        <button
-          @click="goToLogin"
-          class="group flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 pr-2 pl-5 font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98]"
-        >
-          Lanjut ke Login
-          <span
-            class="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
-          >
-            <svg
-              width="11"
-              height="11"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </span>
-        </button>
-      </div>
-    </SpotlightCard>
-  </div>
+  <RegisterSuccessModal
+    :model-value="showSuccessModal"
+    @action="goToLogin"
+    @update:model-value="goToLogin"
+  />
 </template>

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { getCustomerInvoice } from '@/services/customerService'
 import { formatRupiah, formatDate } from '@/utils/format'
 import Skeleton from '@/components/animations/Skeleton.vue'
@@ -12,7 +12,6 @@ import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 
 const route = useRoute()
-const router = useRouter()
 
 const isLoading = ref(true)
 const errorMessage = ref('')

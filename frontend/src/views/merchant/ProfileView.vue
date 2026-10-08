@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { getMerchantProfile, updateMerchantProfile, getCities } from '@/services/merchantService'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
 import FileUploadButton from '@/components/ui/FileUploadButton.vue'
@@ -13,7 +12,6 @@ import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 const API_URL = import.meta.env.VITE_API_URL
 const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
 
-const router = useRouter()
 
 const isLoading = ref(true)
 const isSaving = ref(false)

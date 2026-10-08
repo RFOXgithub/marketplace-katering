@@ -11,8 +11,6 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\MerchantInvoiceController;
 use App\Http\Controllers\Api\MerchantOrderController;
 use App\Http\Controllers\Api\MerchantProfileController;
-use App\Models\Customer;
-use App\Models\Merchant;
 use Illuminate\Support\Facades\Route;
 
 // Guest

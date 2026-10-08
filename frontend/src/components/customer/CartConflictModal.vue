@@ -1,59 +1,74 @@
 <script setup>
 import { cartPendingItem, cartMerchant, confirmReplaceCart, cancelReplaceCart } from '@/services/cartStore'
-import SpotlightCard from '@/components/animations/SpotlightCard.vue'
 </script>
 
 <template>
   <div
     v-if="cartPendingItem"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-secondary/60 p-4 backdrop-blur-sm"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
+    @click.self="cancelReplaceCart"
+    @keydown.esc="cancelReplaceCart"
   >
-    <div class="w-full max-w-sm rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
-      <SpotlightCard
-        class="rounded-[1.625rem] border-0 bg-secondary p-7 text-center"
-        spotlight-color="rgba(245, 166, 35, 0.25)"
-      >
-        <span
-          class="mx-auto w-max rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary"
-        >
-          Keranjang Berisi Katering Lain
+    <div
+      class="relative w-full max-w-md overflow-hidden rounded-[2rem] bg-[#0b0b0c] ring-1 ring-primary/40 shadow-[0_0_70px_rgba(249,166,38,0.18)] md:min-h-[30rem] md:max-w-4xl"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Ganti Katering"
+    >
+      <div class="pointer-events-none absolute -bottom-24 left-0 h-56 w-full bg-[radial-gradient(ellipse_at_center,rgba(249,166,38,0.22),transparent_70%)]"></div>
+
+      <img
+        src="/switch-caterer-chef.png"
+        alt=""
+        draggable="false"
+        class="pointer-events-none absolute bottom-0 left-0 hidden h-full w-[50%] select-none object-cover object-left md:block"
+        style="-webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 85%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 85%, transparent 100%); mask-composite: intersect"
+      />
+
+      <div class="relative px-7 py-8 md:ml-[46%] md:flex md:min-h-[30rem] md:flex-col md:justify-center md:pr-9">
+        <span class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-b from-[#fbbf5a] to-[#f9a626] shadow-[0_6px_18px_rgba(249,166,38,0.45)]">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+          </svg>
         </span>
 
-        <h2 class="mt-3 text-lg font-extrabold text-white">Ganti Katering?</h2>
-        <p class="mt-2 mb-6 text-sm text-white/50">
-          Keranjang kamu masih berisi menu dari
-          <span class="font-semibold text-white/80">{{ cartMerchant?.company_name }}</span
-          >. Satu pesanan hanya boleh dari satu katering. Kosongkan keranjang dan tambahkan menu
-          dari
-          <span class="font-semibold text-white/80">{{
-            cartPendingItem.merchantInfo.company_name
-          }}</span>
+        <h2 class="text-2xl font-extrabold text-white">
+          Ganti <span class="text-primary">Katering?</span>
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-white/60">
+          Keranjang Anda masih berisi menu dari
+          <span class="font-semibold text-white">{{ cartMerchant?.company_name }}</span>.
+          Satu pesanan hanya boleh dari satu katering. Kosongkan keranjang dan tambahkan menu dari
+          <span class="font-semibold text-white">{{ cartPendingItem.merchantInfo.company_name }}</span>
           ini?
         </p>
 
-        <div class="flex flex-col gap-2">
+        <div class="mt-6 flex gap-3">
           <button
-            @click="confirmReplaceCart"
-            class="group flex items-center justify-center gap-2 rounded-full bg-primary py-3 pr-2 pl-5 font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98]"
-          >
-            Kosongkan &amp; Tambahkan
-            <span
-              class="flex h-7 w-7 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5"
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </span>
-          </button>
-          <button
+            type="button"
             @click="cancelReplaceCart"
-            class="rounded-full py-3 text-sm font-medium text-white/60 ring-1 ring-white/15 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+            class="flex-1 rounded-full py-3 text-sm font-semibold text-white ring-1 ring-primary/50 transition-colors duration-200 hover:bg-white/10"
           >
             Batal
           </button>
+          <button
+            type="button"
+            @click="confirmReplaceCart"
+            class="flex flex-[1.4] items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-secondary transition-colors duration-200 hover:bg-[#ff9a1a]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="17 1 21 5 17 9" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <polyline points="7 23 3 19 7 15" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+            </svg>
+            Ganti Katering
+          </button>
         </div>
-      </SpotlightCard>
+      </div>
     </div>
   </div>
 </template>

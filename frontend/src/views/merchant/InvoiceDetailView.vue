@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { getMerchantInvoice, markInvoicePaid } from '@/services/merchantService'
 import { formatRupiah, formatDate } from '@/utils/format'
 import Skeleton from '@/components/animations/Skeleton.vue'
@@ -10,10 +10,9 @@ import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
-import ConfirmModal from '@/components/ui/ConfirmModal.vue'
+import MarkPaidModal from '@/components/ui/MarkPaidModal.vue'
 
 const route = useRoute()
-const router = useRouter()
 
 const isLoading = ref(true)
 const isUpdating = ref(false)
@@ -166,11 +165,8 @@ onMounted(loadInvoice)
       </div>
     </main>
 
-    <ConfirmModal
+    <MarkPaidModal
       v-model="showMarkPaidModal"
-      title="Tandai Lunas?"
-      message="Invoice ini akan ditandai sebagai lunas."
-      confirm-label="Ya, Tandai Lunas"
       :loading="isUpdating"
       @confirm="confirmMarkPaid"
     />

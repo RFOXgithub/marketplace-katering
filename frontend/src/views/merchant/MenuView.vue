@@ -1,11 +1,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { getMenus, getCategories, createMenu, updateMenu, deleteMenu } from '@/services/menuService'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
 import FileUploadButton from '@/components/ui/FileUploadButton.vue'
-import ConfirmModal from '@/components/ui/ConfirmModal.vue'
+import DeleteMenuModal from '@/components/ui/DeleteMenuModal.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
@@ -14,7 +13,6 @@ import { formatRupiah } from '@/utils/format'
 const API_URL = import.meta.env.VITE_API_URL
 const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
 
-const router = useRouter()
 
 const isLoading = ref(true)
 const errorMessage = ref('')
@@ -388,12 +386,10 @@ onMounted(loadData)
       </form>
     </div>
 
-    <ConfirmModal
+    <DeleteMenuModal
       v-model="showDeleteModal"
-      title="Hapus Menu?"
-      :message="`Menu “${menuToDelete?.name}” akan dihapus dari daftar menu kamu.`"
-      confirm-label="Ya, Hapus"
-      danger
+      :menu="menuToDelete"
+      :photo-url="photoUrl"
       :loading="isDeleting"
       @confirm="confirmDelete"
     />
