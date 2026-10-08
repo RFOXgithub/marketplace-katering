@@ -11,6 +11,11 @@ import InvoiceDetailView from '@/views/merchant/InvoiceDetailView.vue'
 import CustomerHomeView from '@/views/customer/HomeView.vue'
 import CustomerProfileView from '@/views/customer/ProfileView.vue'
 import CateringDetailView from '@/views/customer/CateringDetailView.vue'
+import CheckoutView from '@/views/customer/CheckoutView.vue'
+import CustomerOrderListView from '@/views/customer/OrderListView.vue'
+import CustomerOrderDetailView from '@/views/customer/OrderDetailView.vue'
+import CustomerInvoiceListView from '@/views/customer/InvoiceListView.vue'
+import CustomerInvoiceDetailView from '@/views/customer/InvoiceDetailView.vue'
 
 import { getToken, getUser } from '@/services/authService'
 
@@ -80,6 +85,31 @@ const router = createRouter({
       path: '/caterings/:slug',
       component: CateringDetailView,
       meta: { order: 5, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/checkout',
+      component: CheckoutView,
+      meta: { order: 6, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/orders',
+      component: CustomerOrderListView,
+      meta: { order: 7, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/orders/:id',
+      component: CustomerOrderDetailView,
+      meta: { order: 8, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/invoices',
+      component: CustomerInvoiceListView,
+      meta: { order: 9, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/invoices/:id',
+      component: CustomerInvoiceDetailView,
+      meta: { order: 10, requiresAuth: true, role: 'customer' },
     },
   ],
 })

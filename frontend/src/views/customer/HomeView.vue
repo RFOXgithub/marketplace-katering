@@ -83,6 +83,18 @@ onMounted(handleInit)
       </div>
       <nav class="flex items-center gap-3">
         <RouterLink
+          to="/customer/orders"
+          class="text-sm font-medium text-gray-300 transition hover:text-primary"
+        >
+          Riwayat Order
+        </RouterLink>
+        <RouterLink
+          to="/customer/invoices"
+          class="text-sm font-medium text-gray-300 transition hover:text-primary"
+        >
+          Invoice
+        </RouterLink>
+        <RouterLink
           to="/customer/profile"
           class="text-sm font-medium text-gray-300 transition hover:text-primary"
         >

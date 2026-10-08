@@ -127,6 +127,7 @@ async function handleSubmit() {
     await loadData()
   } catch (e) {
     formError.value = e.message
+    formErrors.value = e.errors ?? {}
   } finally {
     isSaving.value = false
   }

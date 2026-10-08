@@ -29,7 +29,9 @@ export async function authFetch(path, options = {}) {
   const data = await res.json()
 
   if (!res.ok) {
-    throw new Error(data.message || 'Terjadi kesalahan')
+    const error = new Error(data.message || 'Terjadi kesalahan')
+    error.errors = data.errors ?? null
+    throw error
   }
 
   return data

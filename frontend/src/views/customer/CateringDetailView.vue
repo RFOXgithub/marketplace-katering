@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getCateringDetail } from '@/services/customerService'
+import { addToCart, cartCount, cartMerchant } from '@/services/cartStore'
 import Skeleton from '@/components/animations/Skeleton.vue'
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -13,6 +14,7 @@ const router = useRouter()
 const isLoading = ref(true)
 const errorMessage = ref('')
 const merchant = ref(null)
+const quantities = ref({})
 
 function photoUrl(path) {
   return path ? `${STORAGE_URL}/${path}` : '/logo-mark.svg'
@@ -32,11 +34,20 @@ async function loadCatering() {
   try {
     const res = await getCateringDetail(route.params.slug)
     merchant.value = res.data
+    quantities.value = Object.fromEntries(res.data.menus.map((menu) => [menu.id, 1]))
   } catch (e) {
     errorMessage.value = e.message
   } finally {
     isLoading.value = false
   }
+}
+
+function handleAddToCart(menu) {
+  addToCart(
+    { id: merchant.value.id, slug: merchant.value.slug, company_name: merchant.value.company_name },
+    menu,
+    quantities.value[menu.id] ?? 1,
+  )
 }
 
 onMounted(loadCatering)
@@ -123,10 +134,38 @@ onMounted(loadCatering)
               </div>
               <p class="line-clamp-2 text-sm text-gray-600">{{ menu.description }}</p>
               <p class="font-bold text-primary-dark">{{ formatRupiah(menu.price) }}</p>
+
+              <div class="mt-2 flex items-center gap-2">
+                <input
+                  v-model.number="quantities[menu.id]"
+                  type="number"
+                  min="1"
+                  class="w-16 rounded-lg border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  @click="handleAddToCart(menu)"
+                  class="flex-1 rounded-lg bg-primary py-1.5 text-sm font-bold text-secondary transition hover:bg-primary-dark"
+                >
+                  + Keranjang
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
+
+    <div
+      v-if="cartCount > 0 && cartMerchant?.id === merchant?.id"
+      class="fixed inset-x-0 bottom-0 flex items-center justify-between bg-secondary px-6 py-4 text-white"
+    >
+      <p class="text-sm">{{ cartCount }} item di keranjang</p>
+      <button
+        @click="router.push('/checkout')"
+        class="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-secondary transition hover:bg-primary-dark"
+      >
+        Lihat Keranjang
+      </button>
+    </div>
   </div>
 </template>
