@@ -1,1 +1,7 @@
 /docs
+
+# unused boilerplate docs (framework scaffolding, never customized)
+backend/AGENTS.md
+backend/CLAUDE.md
+backend/README.md
+frontend/README.md

@@ -14,13 +14,11 @@ import AnimatedList from '@/components/animations/AnimatedList.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
+import { resolveStorageUrl } from '@/services/http'
 import { formatRupiah, formatDate, formatTime, titleCase } from '@/utils/format'
 
-const API_URL = import.meta.env.VITE_API_URL
-const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
-
 function photoUrl(path) {
-  return path ? `${STORAGE_URL}/${path}` : null
+  return resolveStorageUrl(path)
 }
 
 const route = useRoute()
@@ -59,6 +57,7 @@ const NAV_LINKS = [
   { to: '/merchant/menus', label: 'Menu' },
   { to: '/merchant/profile', label: 'Profil' },
   { to: '/merchant/invoices', label: 'Invoice' },
+  { to: '/merchant/reviews', label: 'Ulasan' },
 ]
 
 function isActiveLink(link) {
@@ -69,10 +68,10 @@ async function loadDashboard() {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const [profileRes, statsRes, allOrdersRes] = await Promise.all([
+    const [profileRes, statsRes, recentOrdersRes] = await Promise.all([
       getMerchantProfile(),
       getMerchantDashboardStats(),
-      getMerchantOrders(''),
+      getMerchantOrders('?per_page=5'),
     ])
 
     merchant.value = profileRes.data
@@ -82,7 +81,7 @@ async function loadDashboard() {
     monthlyMenuCounts.value = statsRes.data.monthly_menu_counts ?? [0, 0, 0, 0, 0, 0]
     totalInvoices.value = statsRes.data.total_invoices ?? 0
     unpaidInvoices.value = statsRes.data.unpaid_invoices ?? 0
-    recentOrders.value = (allOrdersRes.data ?? []).slice(0, 5)
+    recentOrders.value = recentOrdersRes.data ?? []
   } catch (e) {
     errorMessage.value = e.message
   } finally {
@@ -239,7 +238,7 @@ onMounted(loadDashboard)
                 aria-hidden="true"
               >
                 <span
-                  class="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 text-primary ring-1 ring-primary/20"
+                  class="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 text-primary ring-1 ring-primary/20"
                 >
                   <svg
                     width="28"
@@ -256,22 +255,22 @@ onMounted(loadDashboard)
                     <line x1="8.5" y1="10.5" x2="15.5" y2="10.5" />
                     <line x1="8.5" y1="14" x2="15.5" y2="14" />
                   </svg>
-                </span>
-                <span
-                  class="absolute right-0 -bottom-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-secondary ring-2 ring-secondary"
-                >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                  <span
+                    class="absolute -right-1.5 -bottom-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-secondary ring-2 ring-secondary"
                   >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </span>
                 </span>
                 <svg
                   width="12"
@@ -434,14 +433,14 @@ onMounted(loadDashboard)
                       stroke-width="2.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-500'"
+                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'"
                     >
                       <polyline v-if="menuGrowthPercent > 0" points="18 15 12 9 6 15" />
                       <polyline v-else points="6 9 12 15 18 9" />
                     </svg>
                     <span
                       class="font-semibold"
-                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-500'"
+                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'"
                     >
                       {{ menuGrowthPercent > 0 ? '+' : '' }}{{ menuGrowthPercent }}%
                     </span>

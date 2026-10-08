@@ -36,7 +36,10 @@ defineProps({
         <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
           {{ eyebrow }}
         </p>
-        <h1 class="truncate text-base font-bold text-primary sm:text-lg">{{ title }}</h1>
+        <h1 class="flex items-center gap-2 truncate text-base font-bold text-primary sm:text-lg">
+          <slot name="title-icon" />
+          <span class="truncate">{{ title }}</span>
+        </h1>
       </div>
 
       <div class="flex flex-wrap items-center gap-1 sm:gap-2">

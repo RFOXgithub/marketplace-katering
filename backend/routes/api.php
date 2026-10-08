@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MerchantDashboardController;
 use App\Http\Controllers\Api\MerchantInvoiceController;
 use App\Http\Controllers\Api\MerchantOrderController;
 use App\Http\Controllers\Api\MerchantProfileController;
+use App\Http\Controllers\Api\MerchantReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Guest
@@ -22,6 +23,7 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/cities', [CityController::class, 'index']);
 Route::get('/caterings', [CateringController::class, 'index']);
 Route::get('/caterings/{slug}', [CateringController::class, 'show']);
+Route::get('/caterings/{slug}/reviews', [CateringController::class, 'reviews']);
 
 // Auth
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/invoices', [MerchantInvoiceController::class, 'index']);
         Route::get('/invoices/{invoice}', [MerchantInvoiceController::class, 'show']);
         Route::patch('/invoices/{invoice}/paid', [MerchantInvoiceController::class, 'markPaid']);
+
+        Route::get('/reviews', [MerchantReviewController::class, 'index']);
     });
 
     // Role Customer
@@ -61,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/invoices/{invoice}', [CustomerInvoiceController::class, 'show']);
 
         Route::get('/favorites', [CustomerFavoriteController::class, 'index']);
+        Route::get('/favorites/merchants', [CustomerFavoriteController::class, 'merchants']);
         Route::post('/favorites/{merchant}', [CustomerFavoriteController::class, 'store']);
         Route::delete('/favorites/{merchant}', [CustomerFavoriteController::class, 'destroy']);
     });

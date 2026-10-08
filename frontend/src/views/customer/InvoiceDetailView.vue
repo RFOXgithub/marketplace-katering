@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getCustomerInvoice } from '@/services/customerService'
 import { formatRupiah, formatDate } from '@/utils/format'
+import { INVOICE_STATUS_LABEL, INVOICE_STATUS_CLASS } from '@/constants/status'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import CartButton from '@/components/customer/CartButton.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
@@ -16,18 +17,6 @@ const route = useRoute()
 const isLoading = ref(true)
 const errorMessage = ref('')
 const invoice = ref(null)
-
-const STATUS_LABEL = {
-  unpaid: 'Belum Lunas',
-  paid: 'Lunas',
-  cancelled: 'Dibatalkan',
-}
-
-const STATUS_CLASS = {
-  unpaid: 'bg-primary/10 text-primary-dark',
-  paid: 'bg-accent/10 text-accent',
-  cancelled: 'bg-ink/10 text-subtle',
-}
 
 async function loadInvoice() {
   isLoading.value = true
@@ -50,6 +39,9 @@ onMounted(loadInvoice)
     <PageBackground />
 
     <PageHeader :sticky="false" eyebrow="Portal Kantor" title="Detail Invoice">
+      <template #title-icon>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-primary"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </template>
       <CartButton />
       <BackButton to="/customer/invoices" />
     </PageHeader>
@@ -67,17 +59,19 @@ onMounted(loadInvoice)
           <div class="mb-4 flex items-start justify-between gap-3">
             <div>
               <span
-                class="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+                class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
               >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 Invoice
               </span>
               <h2 class="mt-2 text-xl font-bold text-ink">{{ invoice.invoice_number }}</h2>
             </div>
-            <StatusBadge :status="invoice.status" :labels="STATUS_LABEL" :classes="STATUS_CLASS" />
+            <StatusBadge :status="invoice.status" :labels="INVOICE_STATUS_LABEL" :classes="INVOICE_STATUS_CLASS" />
           </div>
           <dl class="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
             <div>
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+              <dt class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9 12 2l9 7"/><path d="M4 10v10a1 1 0 0 0 1 1h3v-6h8v6h3a1 1 0 0 0 1-1V10"/></svg>
                 Katering
               </dt>
               <dd class="mt-1 font-medium text-ink">
@@ -85,19 +79,22 @@ onMounted(loadInvoice)
               </dd>
             </div>
             <div>
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+              <dt class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 Tanggal Terbit
               </dt>
               <dd class="mt-1 font-medium text-ink">{{ formatDate(invoice.issued_at) }}</dd>
             </div>
             <div>
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+              <dt class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 Jatuh Tempo
               </dt>
               <dd class="mt-1 font-medium text-ink">{{ formatDate(invoice.due_date) }}</dd>
             </div>
             <div v-if="invoice.paid_at">
-              <dt class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+              <dt class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Dibayar Pada
               </dt>
               <dd class="mt-1 font-medium text-ink">{{ formatDate(invoice.paid_at) }}</dd>
@@ -106,7 +103,8 @@ onMounted(loadInvoice)
         </DoubleBezelCard>
 
         <DoubleBezelCard delay="0.08s">
-          <h2 class="mb-4 text-xs font-semibold uppercase tracking-[0.1em] text-subtle">
+          <h2 class="mb-4 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-subtle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z"/><path d="M19 13v9"/></svg>
             Item Pesanan
           </h2>
           <div class="flex flex-col gap-2">

@@ -12,9 +12,13 @@ class CustomerInvoiceController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $query = Invoice::whereHas('order', function ($orderQuery) use ($customer) {
+        $baseQuery = Invoice::whereHas('order', function ($orderQuery) use ($customer) {
             $orderQuery->where('customer_id', $customer->id);
-        })
+        });
+
+        $counts = $this->statusCounts(clone $baseQuery);
+
+        $query = (clone $baseQuery)
             ->with('order.merchant')
             ->latest();
 
@@ -22,9 +26,27 @@ class CustomerInvoiceController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        $invoices = $query->paginate(10);
+        $invoices = $query->paginate($request->input('per_page', 10));
 
-        return response()->json($invoices);
+        return response()->json([
+            ...$invoices->toArray(),
+            'counts' => $counts,
+        ]);
+    }
+
+    private function statusCounts($query): array
+    {
+        $byStatus = $query->selectRaw('status, count(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $statuses = ['unpaid', 'paid', 'cancelled'];
+        $counts = ['' => $byStatus->sum()];
+        foreach ($statuses as $status) {
+            $counts[$status] = $byStatus[$status] ?? 0;
+        }
+
+        return $counts;
     }
 
     public function show(Request $request, Invoice $invoice)

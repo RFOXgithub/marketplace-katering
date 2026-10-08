@@ -53,3 +53,7 @@ export function markInvoicePaid(id) {
     method: 'PATCH',
   })
 }
+
+export function getMerchantReviews(query = '') {
+  return authFetch(`/merchant/reviews${query}`)
+}

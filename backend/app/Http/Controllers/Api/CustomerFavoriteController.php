@@ -24,6 +24,39 @@ class CustomerFavoriteController extends Controller
         ]);
     }
 
+    /**
+     * List the customer's favorited merchants in full, in the same shape as
+     * CateringController@index, so the favorites page can reuse the same
+     * catering-card markup as the home listing.
+     */
+    public function merchants(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $query = Merchant::where('is_active', true)
+            ->whereHas('favoritedBy', function ($favoriteQuery) use ($customer) {
+                $favoriteQuery->where('customer_id', $customer->id);
+            });
+
+        $query->with(['menus' => function ($menuQuery) {
+            $menuQuery->where('is_available', true)
+                ->whereNotNull('photo_path')
+                ->select('id', 'merchant_id', 'photo_path')
+                ->orderBy('id');
+        }]);
+
+        $merchants = $query->paginate($request->input('per_page', 10));
+
+        $merchants->getCollection()->transform(function ($merchant) {
+            $merchant->cover_photo = $merchant->menus->first()->photo_path ?? null;
+            unset($merchant->menus);
+
+            return $merchant;
+        });
+
+        return response()->json($merchants);
+    }
+
     public function store(Request $request, Merchant $merchant)
     {
         $customer = $request->user()->customer;

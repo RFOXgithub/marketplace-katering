@@ -52,6 +52,29 @@ body {
   color: var(--color-ink);
 }
 
+/*
+ * Native <select> dropdowns render their open option list as an OS-level
+ * popup. It only picks up an opaque background when one is set directly on
+ * <option> — the <select> box's own (often translucent) Tailwind background
+ * utility doesn't carry over, so in dark mode the popup fell back to the
+ * browser's light default while the inherited text color stayed light too,
+ * making text and background blend together. Pin both explicitly to the
+ * current theme's tokens so every select/option/optgroup in the app stays
+ * readable in both themes.
+ */
+select,
+select option,
+select optgroup {
+  background-color: var(--color-card);
+  color: var(--color-ink);
+}
+
+select:disabled,
+select option:disabled {
+  color: var(--color-subtle);
+  opacity: 0.7;
+}
+
 @keyframes fade-up-blur {
   from {
     opacity: 0;

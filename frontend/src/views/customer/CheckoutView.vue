@@ -2,10 +2,12 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCustomerProfile, createOrder } from '@/services/customerService'
+import { reverseGeocode } from '@/services/geocodingService'
 import {
   cartItems,
   cartMerchant,
   cartTotal,
+  cartCount,
   updateQuantity,
   removeFromCart,
   clearCart,
@@ -16,6 +18,7 @@ import PageBackground from '@/components/ui/PageBackground.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import BackButton from '@/components/ui/BackButton.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
+import FormField from '@/components/ui/FormField.vue'
 import { formatRupiah } from '@/utils/format'
 
 const router = useRouter()
@@ -68,11 +71,7 @@ function useCurrentLocation() {
     async (position) => {
       const { latitude, longitude } = position.coords
       try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
-          { headers: { Accept: 'application/json' } },
-        )
-        const data = await res.json()
+        const data = await reverseGeocode(latitude, longitude)
         deliveryAddress.value = data.display_name ?? `${latitude}, ${longitude}`
       } catch {
         locationError.value = 'Gagal mengambil nama alamat. Koordinat tetap disimpan manual.'
@@ -108,12 +107,14 @@ async function handleSubmit() {
       })),
     })
 
-    const [first] = cartItems.value
     successSummary.value = {
-      name: first.name,
-      quantity: first.quantity,
-      price: first.price,
-      extra: cartItems.value.length - 1,
+      items: cartItems.value.map((item) => ({
+        menu_id: item.menu_id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      totalQuantity: cartCount.value,
       total: cartTotal.value,
       date: deliveryDate.value,
       address: deliveryAddress.value,
@@ -141,6 +142,9 @@ onMounted(() => {
     <PageBackground />
 
     <PageHeader eyebrow="Portal Kantor" title="Checkout">
+      <template #title-icon>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-primary"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      </template>
       <BackButton to="/customer/home" />
     </PageHeader>
 
@@ -148,8 +152,9 @@ onMounted(() => {
       <div class="flex flex-col gap-5">
         <DoubleBezelCard>
           <span
-            class="w-max rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+            class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
           >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             Keranjang
           </span>
           <h2 class="mt-2 mb-4 text-xl font-bold text-ink">
@@ -171,7 +176,7 @@ onMounted(() => {
                 min="1"
                 :value="item.quantity"
                 @change="handleQuantityChange(item.menu_id, $event.target.value)"
-                class="w-16 rounded-xl bg-card px-2 py-1.5 text-center text-sm text-ink ring-1 ring-ink/10 focus:outline-none focus:ring-2 focus:ring-primary"
+                class="w-16 rounded-xl bg-card px-2 py-1.5 text-center text-sm text-ink ring-1 ring-ink/10 focus:outline-none focus:ring-2 focus:ring-primary-dark"
               />
               <p class="w-24 shrink-0 text-right text-sm font-semibold text-ink">
                 {{ formatRupiah(item.price * item.quantity) }}
@@ -195,29 +200,30 @@ onMounted(() => {
           <DoubleBezelCard delay="0.08s">
             <div class="flex flex-col gap-4">
             <span
-              class="w-max rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+              class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
             >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               Detail Pengiriman
             </span>
 
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
-                Tanggal Pengiriman
-              </label>
+            <FormField label="Tanggal Pengiriman">
+              <template #icon>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </template>
               <input
                 v-model="deliveryDate"
                 type="date"
                 :min="minDate"
                 required
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
               />
-            </div>
+            </FormField>
 
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center justify-between">
-                <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
-                  Alamat Pengiriman
-                </label>
+            <FormField label="Alamat Pengiriman">
+              <template #icon>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </template>
+              <template #label-action>
                 <button
                   type="button"
                   :disabled="isLocating"
@@ -242,27 +248,30 @@ onMounted(() => {
                   <span v-if="isLocating">Mencari lokasi...</span>
                   <span v-else>Gunakan Lokasi Saat Ini</span>
                 </button>
-              </div>
+              </template>
               <textarea
                 v-model="deliveryAddress"
                 rows="3"
                 required
                 placeholder="Ketik alamat, atau pakai tombol lokasi di atas"
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
               ></textarea>
-              <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">{{ locationError }}</p>
-            </div>
+              <template #footer>
+                <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">{{ locationError }}</p>
+              </template>
+            </FormField>
 
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-medium uppercase tracking-[0.08em] text-subtle">
-                Catatan (opsional)
-              </label>
+            <FormField label="Catatan (opsional)">
+              <template #icon>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+              </template>
               <textarea
                 v-model="notes"
                 rows="2"
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Ada permintaan khusus untuk pesanan ini?"
+                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
               ></textarea>
-            </div>
+            </FormField>
 
             <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
 

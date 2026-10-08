@@ -24,8 +24,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'confirm'])
 
-const firstItem = computed(() => props.order?.items?.[0] ?? null)
-const extraItems = computed(() => Math.max((props.order?.items?.length ?? 0) - 1, 0))
+const totalQuantity = computed(() =>
+  (props.order?.items ?? []).reduce((sum, item) => sum + item.quantity, 0),
+)
 
 function close() {
   if (props.loading) return
@@ -77,24 +78,35 @@ function confirm() {
         </p>
 
         <div v-if="order" class="mt-5 overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
-          <div class="flex items-center gap-3 p-3">
-            <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-            </span>
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-bold text-white">
-                {{ firstItem?.menu_name ?? `Order #${order.id}` }}
-              </p>
-              <p class="text-xs text-white/50">
-                <template v-if="firstItem">{{ firstItem.quantity }} × {{ formatRupiah(firstItem.price) }}</template>
-                <template v-if="extraItems"> · +{{ extraItems }} item lain</template>
+          <div v-if="order.items?.length" class="max-h-60 divide-y divide-white/5 overflow-y-auto">
+            <div
+              v-for="item in order.items"
+              :key="item.id ?? item.menu_id"
+              class="flex items-center gap-3 p-3"
+            >
+              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-bold text-white">{{ item.menu_name }}</p>
+                <p class="text-xs text-white/50">{{ item.quantity }} × {{ formatRupiah(item.price) }}</p>
+              </div>
+              <p class="flex-shrink-0 text-sm font-semibold text-white">
+                {{ formatRupiah(item.subtotal ?? item.price * item.quantity) }}
               </p>
             </div>
-            <p class="flex-shrink-0 text-sm font-bold text-primary">{{ formatRupiah(order.total_amount) }}</p>
+          </div>
+          <p v-else class="p-3 text-sm font-bold text-white">Order #{{ order.id }}</p>
+
+          <div class="flex items-center justify-between border-t border-white/10 px-3 py-3">
+            <span class="text-xs font-medium text-white/50">
+              Total<template v-if="totalQuantity"> ({{ totalQuantity }} item)</template>
+            </span>
+            <span class="text-sm font-bold text-primary">{{ formatRupiah(order.total_amount) }}</span>
           </div>
 
           <div class="grid grid-cols-1 gap-3 border-t border-white/10 px-3 py-3 text-xs sm:grid-cols-2">

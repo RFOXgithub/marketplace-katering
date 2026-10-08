@@ -23,7 +23,15 @@ class MerchantOrderController extends Controller
     {
         $merchant = $request->user()->merchant;
 
-        $query = Order::where('merchant_id', $merchant->id)
+        $baseQuery = Order::where('merchant_id', $merchant->id);
+
+        if ($request->filled('delivery_date')) {
+            $baseQuery->whereDate('delivery_date', $request->input('delivery_date'));
+        }
+
+        $counts = $this->statusCounts(clone $baseQuery);
+
+        $query = (clone $baseQuery)
             ->with(['customer', 'items.menu:id,photo_path'])
             ->latest();
 
@@ -31,13 +39,27 @@ class MerchantOrderController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        if ($request->filled('delivery_date')) {
-            $query->whereDate('delivery_date', $request->input('delivery_date'));
+        $orders = $query->paginate($request->input('per_page', 10));
+
+        return response()->json([
+            ...$orders->toArray(),
+            'counts' => $counts,
+        ]);
+    }
+
+    private function statusCounts($query): array
+    {
+        $byStatus = $query->selectRaw('status, count(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $statuses = ['pending', 'confirmed', 'delivered', 'completed', 'cancelled'];
+        $counts = ['' => $byStatus->sum()];
+        foreach ($statuses as $status) {
+            $counts[$status] = $byStatus[$status] ?? 0;
         }
 
-        $orders = $query->paginate(10);
-
-        return response()->json($orders);
+        return $counts;
     }
 
     public function show(Request $request, Order $order)

@@ -2,6 +2,11 @@ import router from '@/router'
 import { getToken } from './authService'
 
 export const API_URL = import.meta.env.VITE_API_URL
+export const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
+
+export function resolveStorageUrl(path, fallback = null) {
+  return path ? `${STORAGE_URL}/${path}` : fallback
+}
 
 function handleUnauthorized() {
   localStorage.removeItem('token')

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             MenuSeeder::class,
             OrderSeeder::class,
+            TestAccountSeeder::class,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,13 +14,43 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
-        $menus = $request->user()->merchant
-            ->menus()
-            ->with('category')
-            ->latest()
-            ->paginate(10);
+        $merchant = $request->user()->merchant;
 
-        return response()->json($menus);
+        $counts = $this->categoryCounts($merchant->id);
+
+        $query = $merchant->menus()
+            ->with('category')
+            ->latest();
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        $menus = $query->paginate($request->input('per_page', 10));
+
+        return response()->json([
+            ...$menus->toArray(),
+            'counts' => $counts,
+        ]);
+    }
+
+    private function categoryCounts(int $merchantId): array
+    {
+        $rows = Menu::where('merchant_id', $merchantId)
+            ->selectRaw('category_id, count(*) as aggregate')
+            ->groupBy('category_id')
+            ->get();
+
+        $categories = Category::whereIn('id', $rows->pluck('category_id'))->get()->keyBy('id');
+
+        return [
+            'total' => $rows->sum('aggregate'),
+            'categories' => $rows->map(fn ($row) => [
+                'id' => $row->category_id,
+                'name' => $categories[$row->category_id]->name ?? '-',
+                'count' => $row->aggregate,
+            ])->values(),
+        ];
     }
 
     public function store(Request $request)

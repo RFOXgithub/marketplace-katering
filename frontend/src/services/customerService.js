@@ -28,6 +28,10 @@ export function getCateringDetail(slug) {
   return authFetch(`/caterings/${slug}`)
 }
 
+export function getCateringReviews(slug, query = '') {
+  return authFetch(`/caterings/${slug}/reviews${query}`)
+}
+
 export function createOrder(payload) {
   return authFetch('/customer/orders', {
     method: 'POST',
@@ -68,6 +72,10 @@ export function submitOrderReview(orderId, payload) {
 
 export function getFavoriteMerchantIds() {
   return authFetch('/customer/favorites')
+}
+
+export function getFavoriteMerchants(query = '') {
+  return authFetch(`/customer/favorites/merchants${query}`)
 }
 
 export function addFavorite(merchantId) {

@@ -105,17 +105,38 @@ class CustomerOrderController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $query = Order::where('customer_id', $customer->id)
-            ->with(['merchant', 'items'])
+        $baseQuery = Order::where('customer_id', $customer->id);
+        $counts = $this->statusCounts(clone $baseQuery);
+
+        $query = (clone $baseQuery)
+            ->with(['merchant', 'items.menu:id,photo_path'])
             ->latest();
 
         if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
-        $orders = $query->paginate(10);
+        $orders = $query->paginate($request->input('per_page', 10));
 
-        return response()->json($orders);
+        return response()->json([
+            ...$orders->toArray(),
+            'counts' => $counts,
+        ]);
+    }
+
+    private function statusCounts($query): array
+    {
+        $byStatus = $query->selectRaw('status, count(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $statuses = ['pending', 'confirmed', 'delivered', 'completed', 'cancelled'];
+        $counts = ['' => $byStatus->sum()];
+        foreach ($statuses as $status) {
+            $counts[$status] = $byStatus[$status] ?? 0;
+        }
+
+        return $counts;
     }
 
     public function show(Request $request, Order $order)

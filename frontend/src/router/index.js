@@ -8,6 +8,7 @@ import OrderListView from '@/views/merchant/OrderListView.vue'
 import OrderDetailView from '@/views/merchant/OrderDetailView.vue'
 import InvoiceListView from '@/views/merchant/InvoiceListView.vue'
 import InvoiceDetailView from '@/views/merchant/InvoiceDetailView.vue'
+import ReviewListView from '@/views/merchant/ReviewListView.vue'
 import CustomerHomeView from '@/views/customer/HomeView.vue'
 import CustomerProfileView from '@/views/customer/ProfileView.vue'
 import CateringDetailView from '@/views/customer/CateringDetailView.vue'
@@ -16,6 +17,7 @@ import CustomerOrderListView from '@/views/customer/OrderListView.vue'
 import CustomerOrderDetailView from '@/views/customer/OrderDetailView.vue'
 import CustomerInvoiceListView from '@/views/customer/InvoiceListView.vue'
 import CustomerInvoiceDetailView from '@/views/customer/InvoiceDetailView.vue'
+import FavoriteListView from '@/views/customer/FavoriteListView.vue'
 
 import { getToken, getUser } from '@/services/authService'
 
@@ -72,6 +74,11 @@ const router = createRouter({
       meta: { order: 9, requiresAuth: true, role: 'merchant' },
     },
     {
+      path: '/merchant/reviews',
+      component: ReviewListView,
+      meta: { order: 10, requiresAuth: true, role: 'merchant' },
+    },
+    {
       path: '/customer/home',
       component: CustomerHomeView,
       meta: { order: 3, requiresAuth: true, role: 'customer' },
@@ -110,6 +117,11 @@ const router = createRouter({
       path: '/customer/invoices/:id',
       component: CustomerInvoiceDetailView,
       meta: { order: 10, requiresAuth: true, role: 'customer' },
+    },
+    {
+      path: '/customer/favorites',
+      component: FavoriteListView,
+      meta: { order: 11, requiresAuth: true, role: 'customer' },
     },
   ],
 })

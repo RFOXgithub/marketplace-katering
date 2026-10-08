@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Merchant;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class CateringController extends Controller
@@ -25,6 +26,12 @@ class CateringController extends Controller
                 $menuQuery->where('category_id', $request->input('category'));
             });
         }
+
+        match ($request->input('sort', 'popular')) {
+            'name' => $query->orderBy('company_name'),
+            'city' => $query->orderBy('city'),
+            default => $query->orderByDesc('total_orders'),
+        };
 
         // Note: a per-relation limit() here would cap the whole eager-load
         // query at 1 row total (not 1 per merchant), so every available
@@ -66,5 +73,23 @@ class CateringController extends Controller
         return response()->json([
             'data' => $merchant,
         ]);
+    }
+
+    public function reviews(Request $request, string $slug)
+    {
+        $merchant = Merchant::where('slug', $slug)->where('is_active', true)->first();
+
+        if (! $merchant) {
+            return response()->json([
+                'message' => 'Katering tidak ditemukan.',
+            ], 404);
+        }
+
+        $reviews = Review::where('merchant_id', $merchant->id)
+            ->with('customer:id,office_name')
+            ->latest()
+            ->paginate($request->input('per_page', 10));
+
+        return response()->json($reviews);
     }
 }

@@ -23,7 +23,7 @@ defineEmits(['update:modelValue'])
       :value="modelValue"
       :placeholder="placeholder"
       @input="$emit('update:modelValue', $event.target.value)"
-      class="rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-ink transition-colors duration-300 placeholder-subtle focus:bg-ink/[0.06] focus:outline-none focus:ring-2 focus:ring-primary"
+      class="rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-ink transition-colors duration-300 placeholder-subtle focus:bg-ink/[0.06] focus:outline-none focus:ring-2 focus:ring-primary-dark"
     />
     <p v-if="error" class="text-xs text-red-600 dark:text-red-400">{{ error }}</p>
   </div>

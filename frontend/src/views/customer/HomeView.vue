@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { logout } from '@/services/authService'
 import {
@@ -16,15 +16,13 @@ import CartButton from '@/components/customer/CartButton.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import Pagination from '@/components/ui/Pagination.vue'
+import { resolveStorageUrl } from '@/services/http'
 import { titleCase } from '@/utils/format'
-
-const API_URL = import.meta.env.VITE_API_URL
-const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
 
 const router = useRouter()
 
 function photoUrl(path) {
-  return path ? `${STORAGE_URL}/${path}` : '/logo-mark.svg'
+  return resolveStorageUrl(path, '/logo-mark.svg')
 }
 
 const favoriteIds = ref(new Set())
@@ -73,23 +71,19 @@ const city = ref('')
 const categoryId = ref('')
 const sortBy = ref('popular')
 
-const sortedCaterings = computed(() => {
-  if (sortBy.value === 'name') {
-    return [...caterings.value].sort((a, b) => a.company_name.localeCompare(b.company_name))
-  }
-  if (sortBy.value === 'city') {
-    return [...caterings.value].sort((a, b) => (a.city ?? '').localeCompare(b.city ?? ''))
-  }
-  return caterings.value
-})
-
 function buildQuery(page = 1) {
   const params = new URLSearchParams()
   params.set('page', page)
   if (keyword.value) params.set('q', keyword.value)
   if (city.value) params.set('city', city.value)
   if (categoryId.value) params.set('category', categoryId.value)
+  if (sortBy.value) params.set('sort', sortBy.value)
   return `?${params.toString()}`
+}
+
+function selectSort(value) {
+  sortBy.value = value
+  loadCaterings(1)
 }
 
 function applyCateringsResult(res) {
@@ -168,6 +162,12 @@ onMounted(handleInit)
         Invoice
       </RouterLink>
       <RouterLink
+        to="/customer/favorites"
+        class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
+      >
+        Favorit
+      </RouterLink>
+      <RouterLink
         to="/customer/profile"
         class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
       >
@@ -231,7 +231,7 @@ onMounted(handleInit)
             >
               Temukan Katering Terbaik
               <br />
-              untuk <span class="text-primary">Kebutuhan Kantor Anda</span>
+              untuk <span class="text-primary-dark">Kebutuhan Kantor Anda</span>
             </h1>
 
             <p class="animate-fade-up text-sm text-subtle sm:text-base" style="animation-delay: 0.08s">
@@ -288,7 +288,7 @@ onMounted(handleInit)
               v-model="keyword"
               type="text"
               placeholder="Cari nama katering..."
-              class="w-full rounded-2xl bg-ink/[0.04] py-2.5 pr-4 pl-10 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary"
+              class="w-full rounded-2xl bg-ink/[0.04] py-2.5 pr-4 pl-10 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
             />
           </div>
           <div class="relative w-full sm:w-44">
@@ -298,7 +298,7 @@ onMounted(handleInit)
             </svg>
             <select
               v-model="city"
-              class="w-full appearance-none rounded-2xl bg-ink/[0.04] py-2.5 pr-8 pl-10 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+              class="w-full appearance-none rounded-2xl bg-ink/[0.04] py-2.5 pr-8 pl-10 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
             >
               <option value="">Semua Kota</option>
               <option v-for="c in cities" :key="c.id" :value="c.name">{{ c.name }}</option>
@@ -316,7 +316,7 @@ onMounted(handleInit)
             </svg>
             <select
               v-model="categoryId"
-              class="w-full appearance-none rounded-2xl bg-ink/[0.04] py-2.5 pr-8 pl-10 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+              class="w-full appearance-none rounded-2xl bg-ink/[0.04] py-2.5 pr-8 pl-10 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
             >
               <option value="">Semua Kategori</option>
               <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -369,8 +369,9 @@ onMounted(handleInit)
 
             <div class="relative" v-if="caterings.length > 0">
               <select
-                v-model="sortBy"
-                class="appearance-none rounded-full bg-ink/5 py-2 pr-9 pl-4 text-xs font-semibold text-ink focus:outline-none focus:ring-2 focus:ring-primary"
+                :value="sortBy"
+                @change="selectSort($event.target.value)"
+                class="appearance-none rounded-full bg-ink/5 py-2 pr-9 pl-4 text-xs font-semibold text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
               >
                 <option value="popular">Urutkan: Terpopuler</option>
                 <option value="name">Urutkan: Nama A-Z</option>
@@ -388,7 +389,7 @@ onMounted(handleInit)
 
           <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             <div
-              v-for="(catering, index) in sortedCaterings"
+              v-for="(catering, index) in caterings"
               :key="catering.id"
               @click="router.push(`/caterings/${catering.slug}`)"
               class="animate-fade-up group flex cursor-pointer flex-col gap-3 rounded-2xl bg-card p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] ring-1 ring-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
@@ -408,7 +409,7 @@ onMounted(handleInit)
                 <button
                   type="button"
                   :aria-label="favoriteIds.has(catering.id) ? 'Hapus dari favorit' : 'Tandai favorit'"
-                  class="flex h-7 w-7 items-center justify-center rounded-full text-subtle transition-colors duration-200 hover:text-primary"
+                  class="flex h-7 w-7 items-center justify-center rounded-full text-subtle transition-colors duration-200 hover:text-primary-dark"
                   @click.stop="toggleFavorite(catering.id)"
                 >
                   <svg
@@ -420,7 +421,7 @@ onMounted(handleInit)
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    :class="favoriteIds.has(catering.id) ? 'text-primary' : ''"
+                    :class="favoriteIds.has(catering.id) ? 'text-primary-dark' : ''"
                   >
                     <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
                   </svg>
@@ -454,7 +455,7 @@ onMounted(handleInit)
               <div class="mt-auto flex items-center justify-between gap-2">
                 <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-subtle">
                   <span v-if="catering.rating_count > 0" class="flex items-center gap-1 whitespace-nowrap font-semibold text-ink">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="text-primary">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="text-primary-dark">
                       <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z" />
                     </svg>
                     {{ Number(catering.rating_avg).toFixed(1) }}

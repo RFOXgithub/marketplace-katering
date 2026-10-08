@@ -3,7 +3,9 @@
     <div
       ref="listRef"
       :class="[
-        'max-h-[28rem] overflow-y-auto',
+        // top/bottom padding keeps a hovered row's lift (-translate-y-0.5) and
+        // its border from being clipped by this scroll container's edge
+        'max-h-[28rem] overflow-y-auto px-px pt-1 pb-1',
         !displayScrollbar && '[&::-webkit-scrollbar]:hidden scrollbar-none',
       ]"
       :style="{ scrollbarWidth: displayScrollbar ? 'thin' : 'none' }"
