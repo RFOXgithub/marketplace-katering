@@ -77,15 +77,38 @@ onMounted(() => {
               :distortion="0.05"
             />
           </div>
-          <div style="position: relative; z-index: 10">
+          <div
+            style="
+              position: relative;
+              z-index: 10;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 1rem;
+            "
+          >
             <TrueFocus
-              sentence="Katerin Kita"
+              sentence="Marketplace Katering"
               :manual-mode="false"
               :blur-amount="3"
-              border-color="red"
+              border-color="#f5a623"
               :animation-duration="1"
               :pause-between-animations="1"
             />
+            <span
+              style="
+                border-radius: 9999px;
+                background: rgba(245, 166, 35, 0.12);
+                padding: 0.35rem 0.9rem;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: #f5a623;
+              "
+            >
+              Katering bertemu kantor
+            </span>
           </div>
         </div>
       </template>
