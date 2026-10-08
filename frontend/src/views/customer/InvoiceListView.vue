@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCustomerInvoices } from '@/services/customerService'
 import Skeleton from '@/components/animations/Skeleton.vue'
+import AnimatedList from '@/components/animations/AnimatedList.vue'
 
 const router = useRouter()
 
@@ -22,9 +23,16 @@ const STATUS_LABEL = {
 
 const STATUS_CLASS = {
   unpaid: 'bg-primary/10 text-primary-dark',
-  paid: 'bg-green-100 text-green-700',
-  cancelled: 'bg-gray-100 text-gray-500',
+  paid: 'bg-accent/10 text-accent',
+  cancelled: 'bg-secondary/10 text-secondary/50',
 }
+
+const STATUS_FILTERS = [
+  { value: '', label: 'Semua' },
+  { value: 'unpaid', label: 'Belum Lunas' },
+  { value: 'paid', label: 'Lunas' },
+  { value: 'cancelled', label: 'Dibatalkan' },
+]
 
 function formatRupiah(value) {
   return new Intl.NumberFormat('id-ID', {
@@ -63,7 +71,8 @@ async function loadInvoices(page = 1) {
   }
 }
 
-function handleFilterChange() {
+function selectFilter(value) {
+  statusFilter.value = value
   loadInvoices(1)
 }
 
@@ -75,100 +84,137 @@ onMounted(() => loadInvoices(1))
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <header class="flex items-center justify-between bg-secondary px-6 py-4 text-white">
-      <div>
-        <p class="text-xs text-gray-400">Portal Kantor</p>
-        <h1 class="text-lg font-bold text-primary">Invoice</h1>
-      </div>
-      <button
-        @click="router.push('/customer/home')"
-        class="rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium transition hover:border-primary hover:text-primary"
+  <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
+    <div
+      class="pointer-events-none fixed inset-0 z-0"
+      style="
+        background:
+          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
+          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
+      "
+    />
+
+    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
+      <div
+        class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
       >
-        Kembali
-      </button>
+        <div class="min-w-0">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+            Portal Kantor
+          </p>
+          <h1 class="truncate text-base font-bold text-primary sm:text-lg">Invoice</h1>
+        </div>
+
+        <button
+          @click="router.push('/customer/home')"
+          class="group flex items-center gap-2 rounded-full border border-white/15 py-1.5 pr-4 pl-1.5 text-sm font-medium text-white/70 transition-[transform,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
+        >
+          <span
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5"
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+          </span>
+          Kembali
+        </button>
+      </div>
     </header>
 
-    <main class="p-6">
-      <div class="mb-4 flex items-center gap-3">
-        <label class="text-sm text-gray-600">Filter Status:</label>
-        <select
-          v-model="statusFilter"
-          @change="handleFilterChange"
-          class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+    <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <div class="animate-fade-up mb-6 flex flex-wrap gap-2">
+        <button
+          v-for="filter in STATUS_FILTERS"
+          :key="filter.value"
+          @click="selectFilter(filter.value)"
+          class="rounded-full px-4 py-2 text-sm font-medium transition-[transform,background-color,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+          :class="
+            statusFilter === filter.value
+              ? 'bg-secondary text-white'
+              : 'bg-white text-secondary/60 ring-1 ring-secondary/10'
+          "
         >
-          <option value="">Semua</option>
-          <option value="unpaid">Belum Lunas</option>
-          <option value="paid">Lunas</option>
-          <option value="cancelled">Dibatalkan</option>
-        </select>
+          {{ filter.label }}
+        </button>
       </div>
 
-      <div v-if="isLoading" class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
-        <div v-for="i in 6" :key="i" class="flex items-center gap-4">
-          <Skeleton width="25%" height="0.875rem" />
-          <Skeleton width="20%" height="0.875rem" />
-          <Skeleton width="20%" height="0.875rem" />
-          <Skeleton width="15%" height="1.25rem" rounded="9999px" />
+      <div v-if="isLoading" class="rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
+        <div class="flex flex-col gap-3 rounded-[1.625rem] bg-white p-6">
+          <div v-for="i in 6" :key="i" class="flex items-center gap-4">
+            <Skeleton width="25%" height="0.875rem" />
+            <Skeleton width="20%" height="0.875rem" />
+            <Skeleton width="20%" height="0.875rem" />
+            <Skeleton width="15%" height="1.25rem" rounded="9999px" />
+          </div>
         </div>
       </div>
 
       <p v-else-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>
 
-      <p v-else-if="invoices.length === 0" class="text-sm text-gray-400">Belum ada invoice.</p>
+      <p v-else-if="invoices.length === 0" class="text-sm text-secondary/40">Belum ada invoice.</p>
 
-      <div v-else class="rounded-xl border border-gray-200 bg-white p-5">
-        <table class="w-full text-left text-sm">
-          <thead>
-            <tr class="border-b border-gray-200 text-gray-500">
-              <th class="py-2 pr-4">No. Invoice</th>
-              <th class="py-2 pr-4">Katering</th>
-              <th class="py-2 pr-4">Total</th>
-              <th class="py-2 pr-4">Jatuh Tempo</th>
-              <th class="py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="invoice in invoices"
-              :key="invoice.id"
-              @click="goToDetail(invoice)"
-              class="cursor-pointer border-b border-gray-100 transition last:border-0 hover:bg-gray-50"
-            >
-              <td class="py-3 pr-4 font-medium text-gray-800">{{ invoice.invoice_number }}</td>
-              <td class="py-3 pr-4">{{ invoice.order?.merchant?.company_name ?? '-' }}</td>
-              <td class="py-3 pr-4">{{ formatRupiah(invoice.total_amount) }}</td>
-              <td class="py-3 pr-4">{{ formatDate(invoice.due_date) }}</td>
-              <td class="py-3">
+      <div
+        v-else
+        class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
+        style="animation-delay: 0.08s"
+      >
+        <div class="rounded-[1.625rem] bg-white p-6 sm:p-7">
+          <AnimatedList
+            :items="invoices"
+            :show-gradients="invoices.length > 4"
+            :display-scrollbar="false"
+            @item-selected="goToDetail"
+          >
+            <template #default="{ item: invoice }">
+              <div
+                class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-secondary/5 bg-white p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
+              >
+                <span class="flex-1 truncate font-semibold text-secondary">
+                  {{ invoice.invoice_number }}
+                </span>
+                <span class="hidden flex-1 truncate text-secondary/40 sm:block">
+                  {{ invoice.order?.merchant?.company_name ?? '-' }}
+                </span>
+                <span class="hidden text-secondary/40 sm:block">{{ formatDate(invoice.due_date) }}</span>
+                <span class="font-semibold text-secondary">{{ formatRupiah(invoice.total_amount) }}</span>
                 <span
-                  class="rounded-full px-2 py-1 text-xs font-medium"
+                  class="rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]"
                   :class="STATUS_CLASS[invoice.status]"
                 >
                   {{ STATUS_LABEL[invoice.status] ?? invoice.status }}
                 </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <span
+                  class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary/5 text-secondary/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </div>
+            </template>
+          </AnimatedList>
 
-        <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
-          <p>Total {{ total }} invoice</p>
-          <div class="flex gap-2">
-            <button
-              :disabled="currentPage <= 1"
-              @click="loadInvoices(currentPage - 1)"
-              class="rounded-lg border border-gray-300 px-3 py-1 transition hover:border-primary disabled:opacity-40"
-            >
-              Sebelumnya
-            </button>
-            <span class="px-2 py-1">{{ currentPage }} / {{ lastPage }}</span>
-            <button
-              :disabled="currentPage >= lastPage"
-              @click="loadInvoices(currentPage + 1)"
-              class="rounded-lg border border-gray-300 px-3 py-1 transition hover:border-primary disabled:opacity-40"
-            >
-              Berikutnya
-            </button>
+          <div class="mt-4 flex items-center justify-between text-sm text-secondary/50">
+            <p>Total {{ total }} invoice</p>
+            <div class="flex items-center gap-2">
+              <button
+                :disabled="currentPage <= 1"
+                @click="loadInvoices(currentPage - 1)"
+                class="rounded-full px-4 py-1.5 font-medium ring-1 ring-secondary/10 transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-30 disabled:hover:translate-y-0"
+              >
+                Sebelumnya
+              </button>
+              <span class="px-2 font-medium text-secondary">{{ currentPage }} / {{ lastPage }}</span>
+              <button
+                :disabled="currentPage >= lastPage"
+                @click="loadInvoices(currentPage + 1)"
+                class="rounded-full px-4 py-1.5 font-medium ring-1 ring-secondary/10 transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-30 disabled:hover:translate-y-0"
+              >
+                Berikutnya
+              </button>
+            </div>
           </div>
         </div>
       </div>
