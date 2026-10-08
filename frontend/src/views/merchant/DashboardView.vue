@@ -12,6 +12,10 @@ import Skeleton from '@/components/animations/Skeleton.vue'
 import SpotlightCard from '@/components/animations/SpotlightCard.vue'
 import CountUp from '@/components/animations/CountUp.vue'
 import AnimatedList from '@/components/animations/AnimatedList.vue'
+import PageBackground from '@/components/ui/PageBackground.vue'
+import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
+import StatusBadge from '@/components/ui/StatusBadge.vue'
+import { formatRupiah, formatDate, titleCase } from '@/utils/format'
 
 const router = useRouter()
 
@@ -23,31 +27,6 @@ const totalMenu = ref(0)
 const pendingOrders = ref(0)
 const unpaidInvoices = ref(0)
 const recentOrders = ref([])
-
-function titleCase(value) {
-  if (!value) return value
-  return value
-    .split(' ')
-    .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word))
-    .join(' ')
-}
-
-function formatRupiah(value) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(value ?? 0)
-}
-
-function formatDate(value) {
-  if (!value) return '-'
-  return new Date(value).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 const STATUS_LABEL = {
   pending: 'Menunggu',
@@ -107,15 +86,7 @@ onMounted(loadDashboard)
 
 <template>
   <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
-    <!-- ambient background glow — fixed, pointer-events-none, no scroll repaint -->
-    <div
-      class="pointer-events-none fixed inset-0 z-0"
-      style="
-        background:
-          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
-          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
-      "
-    />
+    <PageBackground />
 
     <!-- floating island nav -->
     <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
@@ -264,63 +235,53 @@ onMounted(loadDashboard)
         </div>
 
         <!-- recent orders -->
-        <div
-          class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
-          style="animation-delay: 0.24s"
-        >
-          <div class="rounded-[1.625rem] bg-white p-6 sm:p-7">
-            <div class="mb-5 flex items-center justify-between">
-              <div>
-                <span
-                  class="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
-                >
-                  Aktivitas Terbaru
-                </span>
-                <h2 class="mt-2 text-xl font-bold text-secondary">Order Terbaru</h2>
-              </div>
+        <DoubleBezelCard delay="0.24s">
+          <div class="mb-5 flex items-center justify-between">
+            <div>
+              <span
+                class="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+              >
+                Aktivitas Terbaru
+              </span>
+              <h2 class="mt-2 text-xl font-bold text-secondary">Order Terbaru</h2>
             </div>
-
-            <p v-if="recentOrders.length === 0" class="text-sm text-secondary/40">
-              Belum ada order masuk.
-            </p>
-
-            <AnimatedList
-              v-else
-              :items="recentOrders"
-              :show-gradients="recentOrders.length > 4"
-              :display-scrollbar="false"
-              @item-selected="(order) => router.push(`/merchant/orders/${order.id}`)"
-            >
-              <template #default="{ item: order }">
-                <div
-                  class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-secondary/5 bg-white p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
-                >
-                  <span class="flex-1 truncate font-medium text-secondary">
-                    {{ order.customer?.office_name ?? '-' }}
-                  </span>
-                  <span class="hidden text-secondary/40 sm:block">
-                    {{ formatDate(order.delivery_date) }}
-                  </span>
-                  <span class="font-semibold text-secondary">{{ formatRupiah(order.total_amount) }}</span>
-                  <span
-                    class="rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.1em]"
-                    :class="STATUS_CLASS[order.status] ?? STATUS_CLASS.pending"
-                  >
-                    {{ STATUS_LABEL[order.status] ?? order.status }}
-                  </span>
-                  <span
-                    class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary/5 text-secondary/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
-                  >
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </span>
-                </div>
-              </template>
-            </AnimatedList>
           </div>
-        </div>
+
+          <p v-if="recentOrders.length === 0" class="text-sm text-secondary/40">
+            Belum ada order masuk.
+          </p>
+
+          <AnimatedList
+            v-else
+            :items="recentOrders"
+            :show-gradients="recentOrders.length > 4"
+            :display-scrollbar="false"
+            @item-selected="(order) => router.push(`/merchant/orders/${order.id}`)"
+          >
+            <template #default="{ item: order }">
+              <div
+                class="group mb-3 flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-secondary/5 bg-white p-4 text-sm shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
+              >
+                <span class="flex-1 truncate font-medium text-secondary">
+                  {{ order.customer?.office_name ?? '-' }}
+                </span>
+                <span class="hidden text-secondary/40 sm:block">
+                  {{ formatDate(order.delivery_date) }}
+                </span>
+                <span class="font-semibold text-secondary">{{ formatRupiah(order.total_amount) }}</span>
+                <StatusBadge :status="order.status" :labels="STATUS_LABEL" :classes="STATUS_CLASS" />
+                <span
+                  class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary/5 text-secondary/40 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </div>
+            </template>
+          </AnimatedList>
+        </DoubleBezelCard>
       </div>
     </main>
   </div>

@@ -18,6 +18,12 @@ class CategorySeeder extends Seeder
             'Prasmanan',
             'Vegetarian',
             'Snack',
+            'Jajanan Pasar',
+            'Minuman',
+            'Paket Diet',
+            'Seafood',
+            'Bakery',
+            'Tumpeng',
         ];
 
         foreach ($categories as $name) {

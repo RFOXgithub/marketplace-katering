@@ -1,0 +1,45 @@
+<script setup>
+defineProps({
+  currentPage: {
+    type: Number,
+    required: true,
+  },
+  lastPage: {
+    type: Number,
+    required: true,
+  },
+  total: {
+    type: Number,
+    required: true,
+  },
+  label: {
+    type: String,
+    default: 'item',
+  },
+})
+
+const emit = defineEmits(['change'])
+</script>
+
+<template>
+  <div class="flex items-center justify-between text-sm text-secondary/50">
+    <p>Total {{ total }} {{ label }}</p>
+    <div class="flex items-center gap-2">
+      <button
+        :disabled="currentPage <= 1"
+        @click="emit('change', currentPage - 1)"
+        class="rounded-full px-4 py-1.5 font-medium ring-1 ring-secondary/10 transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-30 disabled:hover:translate-y-0"
+      >
+        Sebelumnya
+      </button>
+      <span class="px-2 font-medium text-secondary">{{ currentPage }} / {{ lastPage }}</span>
+      <button
+        :disabled="currentPage >= lastPage"
+        @click="emit('change', currentPage + 1)"
+        class="rounded-full px-4 py-1.5 font-medium ring-1 ring-secondary/10 transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-30 disabled:hover:translate-y-0"
+      >
+        Berikutnya
+      </button>
+    </div>
+  </div>
+</template>

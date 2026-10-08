@@ -2,16 +2,9 @@ import { ref, computed } from 'vue'
 
 const merchant = ref(null)
 const items = ref([])
+const pendingItem = ref(null)
 
-export function addToCart(merchantInfo, menu, quantity = 1) {
-  if (merchant.value && merchant.value.id !== merchantInfo.id) {
-    const confirmed = window.confirm(
-      'Keranjang kamu berisi menu dari katering lain. Kosongkan keranjang dan tambahkan menu ini?',
-    )
-    if (!confirmed) return
-    items.value = []
-  }
-
+function commitAddToCart(merchantInfo, menu, quantity) {
   merchant.value = merchantInfo
 
   const existing = items.value.find((item) => item.menu_id === menu.id)
@@ -25,6 +18,27 @@ export function addToCart(merchantInfo, menu, quantity = 1) {
       quantity,
     })
   }
+}
+
+export function addToCart(merchantInfo, menu, quantity = 1) {
+  if (merchant.value && merchant.value.id !== merchantInfo.id) {
+    pendingItem.value = { merchantInfo, menu, quantity }
+    return
+  }
+
+  commitAddToCart(merchantInfo, menu, quantity)
+}
+
+export function confirmReplaceCart() {
+  if (!pendingItem.value) return
+  const { merchantInfo, menu, quantity } = pendingItem.value
+  items.value = []
+  commitAddToCart(merchantInfo, menu, quantity)
+  pendingItem.value = null
+}
+
+export function cancelReplaceCart() {
+  pendingItem.value = null
 }
 
 export function updateQuantity(menuId, quantity) {
@@ -49,6 +63,7 @@ export function clearCart() {
 
 export const cartItems = items
 export const cartMerchant = merchant
+export const cartPendingItem = pendingItem
 
 export const cartCount = computed(() =>
   items.value.reduce((sum, item) => sum + item.quantity, 0),

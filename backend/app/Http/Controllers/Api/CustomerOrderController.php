@@ -101,10 +101,15 @@ class CustomerOrderController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $orders = Order::where('customer_id', $customer->id)
+        $query = Order::where('customer_id', $customer->id)
             ->with(['merchant', 'items'])
-            ->latest()
-            ->paginate(10);
+            ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $orders = $query->paginate(10);
 
         return response()->json($orders);
     }

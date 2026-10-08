@@ -13,11 +13,11 @@ class CateringController extends Controller
         $query = Merchant::query()->where('is_active', true);
 
         if ($request->filled('q')) {
-            $query->where('company_name', 'like', '%'.$request->input('q').'%');
+            $query->whereRaw('LOWER(company_name) LIKE ?', ['%'.strtolower($request->input('q')).'%']);
         }
 
         if ($request->filled('city')) {
-            $query->where('city', $request->input('city'));
+            $query->whereRaw('LOWER(city) LIKE ?', ['%'.strtolower($request->input('city')).'%']);
         }
 
         if ($request->filled('category')) {

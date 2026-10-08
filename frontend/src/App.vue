@@ -4,6 +4,7 @@ import router from '@/router'
 import TrueFocus from '@/components/animations/TrueFokus.vue'
 import PixelSwap from '@/components/animations/PixelSwap.vue'
 import LightRays from '@/components/animations/LightRays.vue'
+import CartConflictModal from '@/components/customer/CartConflictModal.vue'
 
 const isSwapped = ref(false)
 const fadeOut = ref(false)
@@ -45,6 +46,8 @@ onMounted(() => {
       </Transition>
     </RouterView>
   </div>
+
+  <CartConflictModal />
 
   <div v-if="showSplash" class="splash" :class="{ 'splash-fade-out': fadeOut }">
     <PixelSwap

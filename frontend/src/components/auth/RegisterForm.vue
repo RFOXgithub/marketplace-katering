@@ -60,7 +60,7 @@ function handelSubmit() {
         textColor="#ffffff"
         activeTextColor="var(--color-secondary)"
         size="md"
-        :radius="10"
+        :radius="18"
         :inset="3"
         equalSlots
         :stretch="100"

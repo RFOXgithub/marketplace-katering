@@ -4,6 +4,11 @@ import { useRouter } from 'vue-router'
 import { getCustomerProfile, updateCustomerProfile } from '@/services/customerService'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
+import CartButton from '@/components/customer/CartButton.vue'
+import PageBackground from '@/components/ui/PageBackground.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
+import BackButton from '@/components/ui/BackButton.vue'
+import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 
 const router = useRouter()
 
@@ -69,60 +74,27 @@ onMounted(loadProfile)
 
 <template>
   <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
-    <div
-      class="pointer-events-none fixed inset-0 z-0"
-      style="
-        background:
-          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
-          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
-      "
-    />
+    <PageBackground />
 
-    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
-      <div
-        class="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
-      >
-        <div class="min-w-0">
-          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            Portal Kantor
-          </p>
-          <h1 class="truncate text-base font-bold text-primary sm:text-lg">Profil Kantor</h1>
-        </div>
-
-        <button
-          @click="router.push('/customer/home')"
-          class="group flex items-center gap-2 rounded-full border border-white/15 py-1.5 pr-4 pl-1.5 text-sm font-medium text-white/70 transition-[transform,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
-        >
-          <span
-            class="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5"
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-          </span>
-          Kembali
-        </button>
-      </div>
-    </header>
+    <PageHeader eyebrow="Portal Kantor" title="Profil Kantor">
+      <CartButton />
+      <BackButton to="/customer/home" />
+    </PageHeader>
 
     <main class="relative z-10 mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-      <div v-if="isLoading" class="rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5">
-        <div class="flex flex-col gap-5 rounded-[1.625rem] bg-white p-6 sm:p-7">
+      <DoubleBezelCard v-if="isLoading" :animate="false">
+        <div class="flex flex-col gap-5">
           <div v-for="i in 5" :key="i" class="flex flex-col gap-1.5">
             <Skeleton width="25%" height="0.75rem" />
             <Skeleton width="100%" height="2.5rem" rounded="1rem" />
           </div>
           <Skeleton width="100%" height="2.75rem" rounded="9999px" />
         </div>
-      </div>
+      </DoubleBezelCard>
 
-      <form
-        v-else
-        @submit.prevent="handleSubmit"
-        class="animate-fade-up rounded-[2rem] bg-secondary/5 p-2 ring-1 ring-secondary/5"
-      >
-        <div class="flex flex-col gap-5 rounded-[1.625rem] bg-white p-6 sm:p-7">
+      <form v-else @submit.prevent="handleSubmit">
+        <DoubleBezelCard>
+          <div class="flex flex-col gap-5">
           <span
             class="w-max rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
           >
@@ -217,7 +189,8 @@ onMounted(loadProfile)
             />
             <span v-else>Simpan Perubahan</span>
           </button>
-        </div>
+          </div>
+        </DoubleBezelCard>
       </form>
     </main>
   </div>

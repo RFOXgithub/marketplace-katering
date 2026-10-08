@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
+import LoginView from '@/views/auth/LoginView.vue'
+import RegisterView from '@/views/auth/RegisterView.vue'
 import MerchantDashboardView from '@/views/merchant/DashboardView.vue'
 import ProfileView from '@/views/merchant/ProfileView.vue'
 import MenuView from '@/views/merchant/MenuView.vue'

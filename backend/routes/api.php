@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CateringController;
+use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\CustomerInvoiceController;
 use App\Http\Controllers\Api\CustomerOrderController;
 use App\Http\Controllers\Api\CustomerProfileController;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:6,1');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/cities', [CityController::class, 'index']);
 Route::get('/caterings', [CateringController::class, 'index']);
 Route::get('/caterings/{slug}', [CateringController::class, 'show']);
 

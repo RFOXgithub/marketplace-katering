@@ -4,6 +4,11 @@ import { useRouter } from 'vue-router'
 import { logout } from '@/services/authService'
 import { getCustomerProfile, searchCaterings, getCategories } from '@/services/customerService'
 import Skeleton from '@/components/animations/Skeleton.vue'
+import CartButton from '@/components/customer/CartButton.vue'
+import PageBackground from '@/components/ui/PageBackground.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
+import Pagination from '@/components/ui/Pagination.vue'
+import { titleCase } from '@/utils/format'
 
 const router = useRouter()
 
@@ -14,34 +19,36 @@ const errorMessage = ref('')
 const customer = ref(null)
 const categories = ref([])
 const caterings = ref([])
+const currentPage = ref(1)
+const lastPage = ref(1)
+const total = ref(0)
 
 const keyword = ref('')
 const city = ref('')
 const categoryId = ref('')
 
-function titleCase(value) {
-  if (!value) return value
-  return value
-    .split(' ')
-    .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word))
-    .join(' ')
-}
-
-function buildQuery() {
+function buildQuery(page = 1) {
   const params = new URLSearchParams()
+  params.set('page', page)
   if (keyword.value) params.set('q', keyword.value)
   if (city.value) params.set('city', city.value)
   if (categoryId.value) params.set('category', categoryId.value)
-  const query = params.toString()
-  return query ? `?${query}` : ''
+  return `?${params.toString()}`
 }
 
-async function loadCaterings() {
+function applyCateringsResult(res) {
+  caterings.value = res.data ?? []
+  currentPage.value = res.current_page ?? 1
+  lastPage.value = res.last_page ?? 1
+  total.value = res.total ?? 0
+}
+
+async function loadCaterings(page = 1) {
   isSearching.value = true
   errorMessage.value = ''
   try {
-    const res = await searchCaterings(buildQuery())
-    caterings.value = res.data ?? []
+    const res = await searchCaterings(buildQuery(page))
+    applyCateringsResult(res)
   } catch (e) {
     errorMessage.value = e.message
   } finally {
@@ -56,11 +63,11 @@ async function handleInit() {
     const [profileRes, categoriesRes, cateringsRes] = await Promise.all([
       getCustomerProfile(),
       getCategories(),
-      searchCaterings(''),
+      searchCaterings(buildQuery(1)),
     ])
     customer.value = profileRes.data
     categories.value = categoriesRes.data ?? []
-    caterings.value = cateringsRes.data ?? []
+    applyCateringsResult(cateringsRes)
   } catch (e) {
     errorMessage.value = e.message
   } finally {
@@ -69,7 +76,7 @@ async function handleInit() {
 }
 
 function handleSearch() {
-  loadCaterings()
+  loadCaterings(1)
 }
 
 async function handleLogout() {
@@ -82,66 +89,50 @@ onMounted(handleInit)
 
 <template>
   <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
-    <div
-      class="pointer-events-none fixed inset-0 z-0"
-      style="
-        background:
-          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
-          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
-      "
-    />
+    <PageBackground />
 
-    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
-      <div
-        class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
+    <PageHeader
+      eyebrow="Portal Kantor"
+      :title="customer ? titleCase(customer.office_name) : 'Memuat...'"
+      max-width="max-w-6xl"
+    >
+      <RouterLink
+        to="/customer/orders"
+        class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
       >
-        <div class="min-w-0">
-          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            Portal Kantor
-          </p>
-          <h1 class="truncate text-base font-bold text-primary sm:text-lg">
-            {{ customer ? titleCase(customer.office_name) : 'Memuat...' }}
-          </h1>
-        </div>
+        Riwayat Order
+      </RouterLink>
+      <RouterLink
+        to="/customer/invoices"
+        class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
+      >
+        Invoice
+      </RouterLink>
+      <RouterLink
+        to="/customer/profile"
+        class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
+      >
+        Profil
+      </RouterLink>
 
-        <nav class="flex flex-wrap items-center gap-1 sm:gap-2">
-          <RouterLink
-            to="/customer/orders"
-            class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
-          >
-            Riwayat Order
-          </RouterLink>
-          <RouterLink
-            to="/customer/invoices"
-            class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
-          >
-            Invoice
-          </RouterLink>
-          <RouterLink
-            to="/customer/profile"
-            class="rounded-full px-3 py-1.5 text-sm font-medium text-white/60 transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
-          >
-            Profil
-          </RouterLink>
+      <CartButton />
 
-          <button
-            @click="handleLogout"
-            class="group ml-1 flex items-center gap-2 rounded-full bg-primary py-1.5 pr-1.5 pl-4 text-sm font-semibold text-secondary transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
-          >
-            Logout
-            <span
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
-            >
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-            </span>
-          </button>
-        </nav>
-      </div>
-    </header>
+      <button
+        @click="handleLogout"
+        class="group ml-1 flex items-center gap-2 rounded-full bg-primary py-1.5 pr-1.5 pl-4 text-sm font-semibold text-secondary transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
+      >
+        Logout
+        <span
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-secondary/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </span>
+      </button>
+    </PageHeader>
 
     <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <div v-if="isLoading" class="flex flex-col gap-6">
@@ -255,6 +246,15 @@ onMounted(handleInit)
             </div>
           </div>
         </div>
+
+        <Pagination
+          v-if="caterings.length > 0"
+          :current-page="currentPage"
+          :last-page="lastPage"
+          :total="total"
+          label="katering"
+          @change="loadCaterings"
+        />
       </div>
     </main>
   </div>

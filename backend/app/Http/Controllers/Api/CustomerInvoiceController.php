@@ -12,12 +12,17 @@ class CustomerInvoiceController extends Controller
     {
         $customer = $request->user()->customer;
 
-        $invoices = Invoice::whereHas('order', function ($query) use ($customer) {
-            $query->where('customer_id', $customer->id);
+        $query = Invoice::whereHas('order', function ($orderQuery) use ($customer) {
+            $orderQuery->where('customer_id', $customer->id);
         })
             ->with('order.merchant')
-            ->latest()
-            ->paginate(10);
+            ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $invoices = $query->paginate(10);
 
         return response()->json($invoices);
     }

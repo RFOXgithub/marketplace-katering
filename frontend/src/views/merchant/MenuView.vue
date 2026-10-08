@@ -1,9 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getMenus, getCategories, createMenu, updateMenu, deleteMenu } from '@/services/menuService'
 import Skeleton from '@/components/animations/Skeleton.vue'
 import LatticeLoader from '@/components/animations/LatticeLoader.vue'
+import FileUploadButton from '@/components/ui/FileUploadButton.vue'
+import ConfirmModal from '@/components/ui/ConfirmModal.vue'
+import PageBackground from '@/components/ui/PageBackground.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
+import BackButton from '@/components/ui/BackButton.vue'
+import { formatRupiah } from '@/utils/format'
 
 const API_URL = import.meta.env.VITE_API_URL
 const STORAGE_URL = API_URL.replace(/\/api\/?$/, '/storage')
@@ -14,6 +20,10 @@ const isLoading = ref(true)
 const errorMessage = ref('')
 const menus = ref([])
 const categories = ref([])
+
+const showDeleteModal = ref(false)
+const isDeleting = ref(false)
+const menuToDelete = ref(null)
 
 const showModal = ref(false)
 const isEditing = ref(false)
@@ -26,18 +36,19 @@ const categoryId = ref('')
 const name = ref('')
 const description = ref('')
 const price = ref('')
+const priceDisplay = computed({
+  get() {
+    if (!price.value) return ''
+    return Number(price.value).toLocaleString('id-ID')
+  },
+  set(value) {
+    price.value = value.replace(/\D/g, '')
+  },
+})
 const isAvailable = ref(true)
 const photoFile = ref(null)
 const photoPreview = ref('')
 const currentPhotoPath = ref('')
-
-function formatRupiah(value) {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(value ?? 0)
-}
 
 function photoUrl(path) {
   return path ? `${STORAGE_URL}/${path}` : '/logo-mark.svg'
@@ -84,7 +95,7 @@ function openEditModal(menu) {
   categoryId.value = menu.category_id
   name.value = menu.name
   description.value = menu.description
-  price.value = menu.price
+  price.value = String(Math.round(Number(menu.price)))
   isAvailable.value = Boolean(menu.is_available)
   currentPhotoPath.value = menu.photo_path
   showModal.value = true
@@ -133,15 +144,22 @@ async function handleSubmit() {
   }
 }
 
-async function handleDelete(menu) {
-  const confirmed = window.confirm(`Hapus menu "${menu.name}"?`)
-  if (!confirmed) return
+function handleDelete(menu) {
+  menuToDelete.value = menu
+  showDeleteModal.value = true
+}
 
+async function confirmDelete() {
+  isDeleting.value = true
+  errorMessage.value = ''
   try {
-    await deleteMenu(menu.id)
+    await deleteMenu(menuToDelete.value.id)
+    showDeleteModal.value = false
     await loadData()
   } catch (e) {
     errorMessage.value = e.message
+  } finally {
+    isDeleting.value = false
   }
 }
 
@@ -150,42 +168,11 @@ onMounted(loadData)
 
 <template>
   <div class="relative min-h-[100dvh] overflow-x-hidden bg-[#f7f5f2]">
-    <div
-      class="pointer-events-none fixed inset-0 z-0"
-      style="
-        background:
-          radial-gradient(60rem 36rem at 85% -10%, rgba(245, 166, 35, 0.14), transparent 60%),
-          radial-gradient(40rem 30rem at -10% 20%, rgba(74, 124, 89, 0.08), transparent 55%);
-      "
-    />
+    <PageBackground />
 
-    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
-      <div
-        class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
-      >
-        <div class="min-w-0">
-          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            Portal Merchant
-          </p>
-          <h1 class="truncate text-base font-bold text-primary sm:text-lg">Kelola Menu</h1>
-        </div>
-
-        <button
-          @click="router.push('/merchant/dashboard')"
-          class="group flex items-center gap-2 rounded-full border border-white/15 py-1.5 pr-4 pl-1.5 text-sm font-medium text-white/70 transition-[transform,color] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:text-primary"
-        >
-          <span
-            class="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-x-0.5"
-          >
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-          </span>
-          Kembali
-        </button>
-      </div>
-    </header>
+    <PageHeader eyebrow="Portal Merchant" title="Kelola Menu" max-width="max-w-6xl">
+      <BackButton to="/merchant/dashboard" />
+    </PageHeader>
 
     <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
       <div class="animate-fade-up mb-6 flex items-center justify-between">
@@ -308,14 +295,9 @@ onMounted(loadData)
             alt="Preview"
             class="h-16 w-16 rounded-2xl object-cover ring-1 ring-secondary/10"
           />
-          <div class="flex flex-col gap-1">
+          <div class="flex min-w-0 flex-1 flex-col gap-1">
             <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Foto Menu</label>
-            <input
-              type="file"
-              accept="image/*"
-              @change="handlePhotoChange"
-              class="text-sm text-secondary/60"
-            />
+            <FileUploadButton label="Pilih Foto" accept="image/*" @change="handlePhotoChange" />
             <p v-if="formErrors.photo" class="text-xs text-red-500">{{ formErrors.photo[0] }}</p>
           </div>
         </div>
@@ -358,13 +340,16 @@ onMounted(loadData)
 
         <div class="flex flex-col gap-1">
           <label class="text-xs font-medium uppercase tracking-[0.08em] text-secondary/40">Harga per Porsi</label>
-          <input
-            v-model="price"
-            type="number"
-            min="0"
-            step="500"
-            class="rounded-2xl bg-secondary/[0.04] px-4 py-2.5 text-sm text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+          <div class="flex items-center gap-2 rounded-2xl bg-secondary/[0.04] px-4 py-2.5 focus-within:ring-2 focus-within:ring-primary">
+            <span class="text-sm text-secondary/40">Rp</span>
+            <input
+              v-model="priceDisplay"
+              type="text"
+              inputmode="numeric"
+              placeholder="0"
+              class="w-full bg-transparent text-sm text-secondary focus:outline-none"
+            />
+          </div>
           <p v-if="formErrors.price" class="text-xs text-red-500">{{ formErrors.price[0] }}</p>
         </div>
 
@@ -402,5 +387,15 @@ onMounted(loadData)
         </div>
       </form>
     </div>
+
+    <ConfirmModal
+      v-model="showDeleteModal"
+      title="Hapus Menu?"
+      :message="`Menu “${menuToDelete?.name}” akan dihapus dari daftar menu kamu.`"
+      confirm-label="Ya, Hapus"
+      danger
+      :loading="isDeleting"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
