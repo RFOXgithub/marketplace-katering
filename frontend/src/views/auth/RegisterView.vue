@@ -33,7 +33,12 @@ function goToLogin() {
 <template>
   <main class="flex min-h-[100dvh]">
     <div class="relative hidden w-2/3 overflow-hidden md:block">
-      <img src="/register.png" alt="registerIlustrasi" class="h-full w-full object-cover" />
+      <img
+        src="/register.png"
+        alt="registerIlustrasi"
+        loading="lazy"
+        class="h-full w-full object-cover"
+      />
       <div
         class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/0 to-secondary/10"
       />
@@ -78,7 +83,9 @@ function goToLogin() {
         <p class="mt-1.5 mb-7 text-sm text-subtle">Isi data berikut untuk membuat akun</p>
 
         <RegisterForm :loading="isLoading" @submit="handleRegister" />
-        <p v-if="errorMessage" class="mt-3 text-xs text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="mt-3 text-xs text-red-600 dark:text-red-400">
+          {{ errorMessage }}
+        </p>
 
         <p class="mt-7 text-center text-sm text-subtle">
           Sudah punya akun?

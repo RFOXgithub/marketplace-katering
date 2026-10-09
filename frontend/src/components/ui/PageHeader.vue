@@ -21,10 +21,7 @@ defineProps({
 
 <template>
   <header
-    :class="[
-      'z-40 mx-4 sm:mx-6',
-      sticky ? 'sticky top-4 sm:top-6' : 'relative mt-4 sm:mt-6',
-    ]"
+    :class="['z-40 mx-4 sm:mx-6', sticky ? 'sticky top-4 sm:top-6' : 'relative mt-4 sm:mt-6']"
   >
     <div
       :class="[
@@ -38,7 +35,7 @@ defineProps({
         </p>
         <h1 class="flex items-center gap-2 truncate text-base font-bold text-primary sm:text-lg">
           <slot name="title-icon" />
-          <span class="truncate">{{ title }}</span>
+          <span class="min-w-0 truncate">{{ title }}</span>
         </h1>
       </div>
 

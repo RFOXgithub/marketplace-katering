@@ -12,6 +12,7 @@ import SpotlightCard from '@/components/animations/SpotlightCard.vue'
 import CountUp from '@/components/animations/CountUp.vue'
 import AnimatedList from '@/components/animations/AnimatedList.vue'
 import PageBackground from '@/components/ui/PageBackground.vue'
+import PageHeader from '@/components/ui/PageHeader.vue'
 import DoubleBezelCard from '@/components/ui/DoubleBezelCard.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import { resolveStorageUrl } from '@/services/http'
@@ -86,64 +87,54 @@ onMounted(loadDashboard)
   <div class="relative min-h-[100dvh] overflow-x-clip bg-page">
     <PageBackground />
 
-    <!-- floating island nav -->
-    <header class="sticky top-4 z-40 mx-4 sm:top-6 sm:mx-6">
-      <div
-        class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 rounded-[1.75rem] border border-white/10 bg-secondary/90 px-4 py-3 shadow-[0_20px_50px_-20px_rgba(18,18,18,0.45)] backdrop-blur-xl sm:px-6 sm:py-3.5"
-      >
-        <div class="min-w-0">
-          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-            Portal Merchant
-          </p>
-          <h1 class="truncate text-base font-bold text-primary sm:text-lg">
-            {{ merchant ? titleCase(merchant.company_name) : 'Memuat...' }}
-          </h1>
-        </div>
-
-        <nav class="flex flex-wrap items-center gap-1 sm:gap-2">
-          <RouterLink
-            v-for="link in NAV_LINKS"
-            :key="link.to"
-            :to="link.to"
-            class="relative rounded-full px-3 py-1.5 text-sm font-medium transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
-            :class="isActiveLink(link) ? 'text-primary' : 'text-white/60 hover:text-primary'"
-          >
-            {{ link.label }}
-            <span
-              v-if="isActiveLink(link)"
-              class="absolute -bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary"
-            />
-          </RouterLink>
-
-          <button
-            @click="handleLogout"
-            class="group ml-1 flex items-center gap-2 rounded-full bg-primary py-1.5 pr-1.5 pl-4 text-sm font-semibold text-secondary transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
-          >
-            Logout
-            <span
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
-            >
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-            </span>
-          </button>
-        </nav>
+    <PageHeader
+      eyebrow="Portal Merchant"
+      :title="merchant ? titleCase(merchant.company_name) : 'Memuat...'"
+      max-width="max-w-6xl"
+    >
+      <div class="hidden sm:contents">
+        <RouterLink
+          v-for="link in NAV_LINKS"
+          :key="link.to"
+          :to="link.to"
+          class="relative rounded-full px-3 py-1.5 text-sm font-medium transition-[color,transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+          :class="isActiveLink(link) ? 'text-primary' : 'text-white/60 hover:text-primary'"
+        >
+          {{ link.label }}
+          <span
+            v-if="isActiveLink(link)"
+            class="absolute -bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary"
+          />
+        </RouterLink>
       </div>
-    </header>
 
-    <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <button
+        @click="handleLogout"
+        class="group ml-1 flex items-center gap-2 rounded-full bg-primary py-1.5 pr-1.5 pl-4 text-sm font-semibold text-secondary transition-[transform] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.97]"
+      >
+        Logout
+        <span
+          class="flex h-6 w-6 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105"
+        >
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </span>
+      </button>
+    </PageHeader>
+
+    <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 pb-24 sm:px-6 sm:py-16 sm:pb-16">
       <!-- loading skeleton -->
       <div v-if="isLoading" class="flex flex-col gap-5">
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -357,8 +348,8 @@ onMounted(loadDashboard)
                 class="relative h-full overflow-hidden rounded-[1.625rem] border-0 bg-card p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
                 spotlight-color="rgba(245, 166, 35, 0.12)"
               >
-                <div class="flex items-start justify-between gap-3">
-                  <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
                     <span
                       class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary-dark"
                     >
@@ -418,14 +409,18 @@ onMounted(loadDashboard)
                       stroke-width="2.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'"
+                      :class="
+                        menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'
+                      "
                     >
                       <polyline v-if="menuGrowthPercent > 0" points="18 15 12 9 6 15" />
                       <polyline v-else points="6 9 12 15 18 9" />
                     </svg>
                     <span
                       class="font-semibold"
-                      :class="menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'"
+                      :class="
+                        menuGrowthPercent > 0 ? 'text-accent' : 'text-red-600 dark:text-red-400'
+                      "
                     >
                       {{ menuGrowthPercent > 0 ? '+' : '' }}{{ menuGrowthPercent }}%
                     </span>
@@ -456,8 +451,8 @@ onMounted(loadDashboard)
                 class="h-full rounded-[1.625rem] border-0 bg-card p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
                 spotlight-color="rgba(245, 166, 35, 0.12)"
               >
-                <div class="flex items-start justify-between gap-3">
-                  <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-center gap-3">
                     <span
                       class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary-dark"
                     >
@@ -531,7 +526,7 @@ onMounted(loadDashboard)
 
         <!-- recent orders -->
         <DoubleBezelCard delay="0.24s">
-          <div class="mb-5 flex items-center justify-between">
+          <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
               <span
                 class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold tracking-[0.2em] text-primary-dark uppercase"
@@ -592,6 +587,7 @@ onMounted(loadDashboard)
                   v-if="photoUrl(order.items?.[0]?.menu?.photo_path)"
                   :src="photoUrl(order.items[0].menu.photo_path)"
                   alt=""
+                  loading="lazy"
                   class="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-ink/10"
                 />
                 <span
@@ -663,13 +659,17 @@ onMounted(loadDashboard)
 
                 <span class="flex-1" />
 
-                <span class="font-semibold text-ink">{{ formatRupiah(order.total_amount) }}</span>
+                <div
+                  class="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-3"
+                >
+                  <span class="font-semibold text-ink">{{ formatRupiah(order.total_amount) }}</span>
 
-                <StatusBadge
-                  :status="order.status"
-                  :labels="ORDER_STATUS_LABEL"
-                  :classes="ORDER_STATUS_CLASS"
-                />
+                  <StatusBadge
+                    :status="order.status"
+                    :labels="ORDER_STATUS_LABEL"
+                    :classes="ORDER_STATUS_CLASS"
+                  />
+                </div>
 
                 <span
                   class="hidden h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink/5 text-subtle transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5 group-hover:bg-primary/10 group-hover:text-primary-dark sm:flex"

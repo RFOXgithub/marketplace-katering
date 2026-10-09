@@ -199,17 +199,46 @@ onMounted(loadData)
 
     <PageHeader eyebrow="Portal Merchant" title="Kelola Menu" max-width="max-w-6xl">
       <template #title-icon>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-primary"><path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z"/><path d="M19 13v9"/></svg>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0 text-primary"
+        >
+          <path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2" />
+          <path d="M5 2v20" />
+          <path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z" />
+          <path d="M19 13v9" />
+        </svg>
       </template>
       <BackButton to="/merchant/dashboard" />
     </PageHeader>
 
-    <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <main class="relative z-10 mx-auto max-w-6xl px-4 py-12 pb-24 sm:px-6 sm:py-16 sm:pb-16">
       <div class="animate-fade-up mb-6 flex flex-wrap items-center justify-between gap-3">
         <span
           class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
         >
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z"/><path d="M19 13v9"/></svg>
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2" />
+            <path d="M5 2v20" />
+            <path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z" />
+            <path d="M19 13v9" />
+          </svg>
           {{ total }} Menu Terdaftar
         </span>
 
@@ -221,7 +250,16 @@ onMounted(loadData)
           <span
             class="flex h-7 w-7 items-center justify-center rounded-full bg-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:rotate-90"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
@@ -247,76 +285,83 @@ onMounted(loadData)
         </div>
       </div>
 
-      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+      <p v-else-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">
+        {{ errorMessage }}
+      </p>
 
       <div
         v-else-if="menus.length === 0"
         class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
       >
         <p class="rounded-[1.625rem] bg-card p-10 text-center text-sm text-subtle">
-          {{ categoryFilter ? 'Belum ada menu di kategori ini.' : 'Belum ada menu. Tambahkan menu pertama kamu.' }}
+          {{
+            categoryFilter
+              ? 'Belum ada menu di kategori ini.'
+              : 'Belum ada menu. Tambahkan menu pertama kamu.'
+          }}
         </p>
       </div>
 
       <template v-else>
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <div
-          v-for="(menu, index) in menus"
-          :key="menu.id"
-          class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
-          :style="{ animationDelay: `${Math.min(index, 8) * 0.06}s` }"
-        >
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <div
-            class="flex h-full flex-col gap-3 rounded-[1.625rem] bg-card p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
+            v-for="(menu, index) in menus"
+            :key="menu.id"
+            class="animate-fade-up rounded-[2rem] bg-ink/5 p-2 ring-1 ring-ink/5"
+            :style="{ animationDelay: `${Math.min(index, 8) * 0.06}s` }"
           >
-            <div class="relative overflow-hidden rounded-[1.125rem]">
-              <img
-                :src="photoUrl(menu.photo_path)"
-                :alt="menu.name"
-                class="h-36 w-full object-cover"
-              />
-              <span
-                v-if="!menu.is_available"
-                class="absolute top-2 right-2 rounded-full bg-secondary/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white backdrop-blur-sm"
-              >
-                Nonaktif
-              </span>
-            </div>
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0">
-                <h2 class="truncate font-bold text-ink">{{ menu.name }}</h2>
-                <p class="text-xs text-subtle">{{ menu.category?.name ?? '-' }}</p>
+            <div
+              class="flex h-full flex-col gap-3 rounded-[1.625rem] bg-card p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]"
+            >
+              <div class="relative overflow-hidden rounded-[1.125rem]">
+                <img
+                  :src="photoUrl(menu.photo_path)"
+                  :alt="menu.name"
+                  loading="lazy"
+                  class="h-36 w-full object-cover"
+                />
+                <span
+                  v-if="!menu.is_available"
+                  class="absolute top-2 right-2 rounded-full bg-secondary/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-white backdrop-blur-sm"
+                >
+                  Nonaktif
+                </span>
               </div>
-            </div>
-            <p class="line-clamp-2 text-sm text-muted">{{ menu.description }}</p>
-            <p class="text-lg font-extrabold text-primary-dark">{{ formatRupiah(menu.price) }}</p>
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <h2 class="truncate font-bold text-ink">{{ menu.name }}</h2>
+                  <p class="text-xs text-subtle">{{ menu.category?.name ?? '-' }}</p>
+                </div>
+              </div>
+              <p class="line-clamp-2 text-sm text-muted">{{ menu.description }}</p>
+              <p class="text-lg font-extrabold text-primary-dark">{{ formatRupiah(menu.price) }}</p>
 
-            <div class="mt-auto flex gap-2 pt-1">
-              <button
-                @click="openEditModal(menu)"
-                class="flex-1 rounded-full py-2 text-sm font-semibold text-ink ring-1 ring-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
-              >
-                Edit
-              </button>
-              <button
-                @click="handleDelete(menu)"
-                class="flex-1 rounded-full bg-red-500/10 py-2 text-sm font-semibold text-red-600 dark:text-red-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
-              >
-                Hapus
-              </button>
+              <div class="mt-auto flex gap-2 pt-1">
+                <button
+                  @click="openEditModal(menu)"
+                  class="flex-1 rounded-full py-2 text-sm font-semibold text-ink ring-1 ring-ink/10 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+                >
+                  Edit
+                </button>
+                <button
+                  @click="handleDelete(menu)"
+                  class="flex-1 rounded-full bg-red-500/10 py-2 text-sm font-semibold text-red-600 dark:text-red-400 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
+                >
+                  Hapus
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <Pagination
-        class="mt-6"
-        :current-page="currentPage"
-        :last-page="lastPage"
-        :total="total"
-        label="menu"
-        @change="loadData"
-      />
+        <Pagination
+          class="mt-6"
+          :current-page="currentPage"
+          :last-page="lastPage"
+          :total="total"
+          label="menu"
+          @change="loadData"
+        />
       </template>
     </main>
 
@@ -333,8 +378,18 @@ onMounted(loadData)
           @click="closeModal"
           class="absolute top-5 right-5 flex h-8 w-8 items-center justify-center rounded-full bg-ink/5 text-subtle transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:bg-ink/10"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
 
@@ -342,7 +397,21 @@ onMounted(loadData)
           <span
             class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z"/><path d="M19 13v9"/></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2" />
+              <path d="M5 2v20" />
+              <path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z" />
+              <path d="M19 13v9" />
+            </svg>
             {{ isEditing ? 'Edit' : 'Baru' }}
           </span>
           <h2 class="mt-2 text-xl font-bold text-ink">
@@ -359,7 +428,20 @@ onMounted(loadData)
           <div class="flex min-w-0 flex-1">
             <FormField label="Foto Menu" :error="formErrors.photo?.[0]">
               <template #icon>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
               </template>
               <FileUploadButton label="Pilih Foto" accept="image/*" @change="handlePhotoChange" />
             </FormField>
@@ -368,7 +450,21 @@ onMounted(loadData)
 
         <FormField label="Kategori" :error="formErrors.category_id?.[0]">
           <template #icon>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2.83 12.83a2 2 0 0 1 0-2.83l7.17-7.17A2 2 0 0 1 11.42 2h6.58a2 2 0 0 1 2 2v6.59a2 2 0 0 1-.58 1.41z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.59 13.41 13.42 20.6a2 2 0 0 1-2.83 0L2.83 12.83a2 2 0 0 1 0-2.83l7.17-7.17A2 2 0 0 1 11.42 2h6.58a2 2 0 0 1 2 2v6.59a2 2 0 0 1-.58 1.41z"
+              />
+              <circle cx="7.5" cy="7.5" r="1.5" />
+            </svg>
           </template>
           <select
             v-model="categoryId"
@@ -381,7 +477,21 @@ onMounted(loadData)
 
         <FormField label="Nama Menu" :error="formErrors.name?.[0]">
           <template #icon>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2"/><path d="M5 2v20"/><path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z"/><path d="M19 13v9"/></svg>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 2v7a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V2" />
+              <path d="M5 2v20" />
+              <path d="M19 2c-1.5 0-3 1.5-3 4v5c0 1.5 1 2 2 2h1V2z" />
+              <path d="M19 13v9" />
+            </svg>
           </template>
           <input
             v-model="name"
@@ -393,7 +503,21 @@ onMounted(loadData)
 
         <FormField label="Deskripsi" :error="formErrors.description?.[0]">
           <template #icon>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="8" y1="13" x2="16" y2="13" />
+              <line x1="8" y1="17" x2="13" y2="17" />
+            </svg>
           </template>
           <textarea
             v-model="description"
@@ -405,9 +529,24 @@ onMounted(loadData)
 
         <FormField label="Harga per Porsi" :error="formErrors.price?.[0]">
           <template #icon>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="6" width="20" height="12" rx="2" />
+              <circle cx="12" cy="12" r="2" />
+              <path d="M6 12h.01M18 12h.01" />
+            </svg>
           </template>
-          <div class="flex items-center gap-2 rounded-2xl bg-ink/[0.04] px-4 py-2.5 focus-within:ring-2 focus-within:ring-primary-dark">
+          <div
+            class="flex items-center gap-2 rounded-2xl bg-ink/[0.04] px-4 py-2.5 focus-within:ring-2 focus-within:ring-primary-dark"
+          >
             <span class="text-sm text-subtle">Rp</span>
             <input
               v-model="priceDisplay"
@@ -419,7 +558,9 @@ onMounted(loadData)
           </div>
         </FormField>
 
-        <label class="flex items-center gap-3 rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-muted">
+        <label
+          class="flex items-center gap-3 rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-muted"
+        >
           <input v-model="isAvailable" type="checkbox" class="h-4 w-4 accent-primary" />
           Menu tersedia
         </label>

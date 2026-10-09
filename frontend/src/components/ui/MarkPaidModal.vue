@@ -37,7 +37,7 @@ function confirm() {
     @keydown.esc="close"
   >
     <div
-      class="relative w-full max-w-md overflow-hidden rounded-[2rem] bg-[#0b0b0c] ring-1 ring-primary/40 shadow-[0_0_70px_rgba(249,166,38,0.18)] md:min-h-[30rem] md:max-w-4xl"
+      class="relative max-h-[90vh] w-full max-w-md overflow-hidden rounded-[2rem] bg-[#0b0b0c] ring-1 ring-primary/40 shadow-[0_0_70px_rgba(249,166,38,0.18)] md:min-h-[30rem] md:max-w-4xl"
       role="dialog"
       aria-modal="true"
       aria-label="Tandai Lunas"
@@ -48,11 +48,14 @@ function confirm() {
         src="/mark-paid-chef.png"
         alt=""
         draggable="false"
+        loading="lazy"
         class="pointer-events-none absolute bottom-0 left-0 hidden h-full w-[50%] select-none object-cover object-left md:block"
         style="-webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 85%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 8%, #000 85%, transparent 100%); mask-composite: intersect"
       />
 
-      <div class="relative px-7 py-8 md:ml-[46%] md:flex md:min-h-[30rem] md:flex-col md:justify-center md:pr-9">
+      <div
+        class="relative max-h-[90vh] overflow-y-auto px-7 py-8 md:ml-[46%] md:flex md:min-h-[30rem] md:flex-col md:justify-center md:pr-9"
+      >
         <span class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-b from-[#fbbf5a] to-[#f9a626] shadow-[0_6px_18px_rgba(249,166,38,0.45)]">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12" />

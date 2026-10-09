@@ -12,25 +12,34 @@ defineProps({
     type: String,
     default: '',
   },
+  ariaLabel: {
+    type: String,
+    default: null,
+  },
 })
 
-defineEmits(['click', 'thumbnail-error'])
+const emit = defineEmits(['click', 'thumbnail-error'])
 </script>
 
 <template>
   <div
-    class="group relative flex cursor-pointer items-center gap-4 rounded-2xl border border-ink/5 bg-card p-4 shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30"
-    @click="$emit('click')"
+    class="group relative flex cursor-pointer items-center gap-4 rounded-2xl border border-ink/5 bg-card p-4 shadow-[0_1px_2px_rgba(18,18,18,0.04)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-dark"
+    role="link"
+    tabindex="0"
+    :aria-label="ariaLabel ?? undefined"
+    @click="emit('click')"
+    @keydown.enter.prevent="emit('click')"
   >
     <!-- thumbnail + dot status indikator -->
-    <div class="relative h-[4.5rem] w-[4.5rem] shrink-0">
+    <div class="relative h-14 w-14 shrink-0 sm:h-[4.5rem] sm:w-[4.5rem]">
       <div class="h-full w-full overflow-hidden rounded-xl bg-ink/10">
         <img
           v-if="thumbnail"
           :src="thumbnail"
           :alt="alt"
+          loading="lazy"
           class="h-full w-full object-cover"
-          @error="$emit('thumbnail-error')"
+          @error="emit('thumbnail-error')"
         />
         <div v-else class="flex h-full w-full items-center justify-center">
           <slot name="fallback-icon" />
@@ -49,7 +58,7 @@ defineEmits(['click', 'thumbnail-error'])
     </div>
 
     <!-- trailing (harga, badge, arrow, dll) -->
-    <div class="flex shrink-0 items-center gap-3">
+    <div class="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-3">
       <slot name="trailing" />
     </div>
   </div>

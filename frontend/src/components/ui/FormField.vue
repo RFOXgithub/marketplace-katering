@@ -17,8 +17,10 @@ defineProps({
 
 <template>
   <div class="flex flex-col gap-1">
-    <div class="flex items-center justify-between">
-      <label class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle">
+    <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+      <label
+        class="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.08em] text-subtle"
+      >
         <slot name="icon" />
         {{ label }}
       </label>

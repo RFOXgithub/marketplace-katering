@@ -48,7 +48,7 @@ function confirm() {
   >
     <!-- One single card: the illustration fades into the same background as the content -->
     <div
-      class="relative w-full max-w-md overflow-hidden rounded-[2rem] bg-[#0b0b0c] ring-1 ring-primary/40 shadow-[0_0_70px_rgba(249,166,38,0.18)] md:max-w-4xl"
+      class="relative max-h-[90vh] w-full max-w-md overflow-hidden rounded-[2rem] bg-[#0b0b0c] ring-1 ring-primary/40 shadow-[0_0_70px_rgba(249,166,38,0.18)] md:max-w-4xl"
       role="dialog"
       aria-modal="true"
       aria-label="Batalkan Order"
@@ -59,11 +59,12 @@ function confirm() {
         src="/cancel-order-girl.png"
         alt=""
         draggable="false"
+        loading="lazy"
         class="pointer-events-none absolute bottom-0 left-0 hidden h-full w-[48%] select-none object-cover object-left md:block"
         style="-webkit-mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 18%, #000 85%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 18%, #000 85%, transparent 100%); mask-composite: intersect"
       />
 
-      <div class="relative px-7 py-8 md:ml-[44%] md:pr-9">
+      <div class="relative max-h-[90vh] overflow-y-auto px-7 py-8 md:ml-[44%] md:pr-9">
         <svg class="mb-3 drop-shadow-[0_6px_14px_rgba(249,166,38,0.45)]" width="48" height="44" viewBox="0 0 64 58" fill="none">
           <path d="M27.5 5.5a5 5 0 0 1 9 0l24 41a5 5 0 0 1-4.5 7.5H8a5 5 0 0 1-4.5-7.5z" fill="#f9a626" stroke="#fbbf5a" stroke-width="2" stroke-linejoin="round" />
           <rect x="29.5" y="18" width="5" height="18" rx="2.5" fill="#1a1208" />

@@ -182,7 +182,7 @@ export function unregisterSyncGroup(group: string): void {
       v-for="(word, index) in words"
       :key="props.index ? props.index[index] : index"
       :ref="(el) => setWordRef(el as HTMLSpanElement, index)"
-      class="relative font-black text-7xl cursor-pointer"
+      class="relative font-black text-3xl cursor-pointer sm:text-5xl md:text-7xl"
       :style="{
         filter:
           (props.index ? props.index[index] : index) === currentIndex

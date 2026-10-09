@@ -123,18 +123,45 @@ onMounted(() => {
 
     <PageHeader eyebrow="Portal Kantor" title="Checkout">
       <template #title-icon>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-primary"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="shrink-0 text-primary"
+        >
+          <circle cx="9" cy="21" r="1" />
+          <circle cx="20" cy="21" r="1" />
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        </svg>
       </template>
       <BackButton to="/customer/home" />
     </PageHeader>
 
-    <main class="relative z-10 mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+    <main class="relative z-10 mx-auto max-w-2xl px-4 py-12 pb-24 sm:px-6 sm:py-16 sm:pb-16">
       <div class="flex flex-col gap-5">
         <DoubleBezelCard>
           <span
             class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
             Keranjang
           </span>
           <h2 class="mt-2 mb-4 text-xl font-bold text-ink">
@@ -179,98 +206,156 @@ onMounted(() => {
         <form v-if="!isLoading" @submit.prevent="handleSubmit">
           <DoubleBezelCard delay="0.08s">
             <div class="flex flex-col gap-4">
-            <span
-              class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Detail Pengiriman
-            </span>
-
-            <FormField label="Tanggal Pengiriman">
-              <template #icon>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </template>
-              <input
-                v-model="deliveryDate"
-                type="date"
-                :min="minDate"
-                required
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
-              />
-            </FormField>
-
-            <FormField label="Alamat Pengiriman">
-              <template #icon>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              </template>
-              <template #label-action>
-                <button
-                  type="button"
-                  :disabled="isLocating"
-                  @click="useCurrentLocationForAddress"
-                  class="group flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-dark transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-60"
+              <span
+                class="flex w-max items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-dark"
+              >
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                Detail Pengiriman
+              </span>
+
+              <FormField label="Tanggal Pengiriman">
+                <template #icon>
                   <svg
-                    v-if="!isLocating"
                     width="12"
                     height="12"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2.5"
+                    stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </template>
+                <input
+                  v-model="deliveryDate"
+                  type="date"
+                  :min="minDate"
+                  required
+                  class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                />
+              </FormField>
+
+              <FormField label="Alamat Pengiriman">
+                <template #icon>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   >
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span v-if="isLocating">Mencari lokasi...</span>
-                  <span v-else>Gunakan Lokasi Saat Ini</span>
-                </button>
-              </template>
-              <textarea
-                v-model="deliveryAddress"
-                rows="3"
-                required
-                placeholder="Ketik alamat, atau pakai tombol lokasi di atas"
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
-              ></textarea>
-              <template #footer>
-                <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">{{ locationError }}</p>
-              </template>
-            </FormField>
+                </template>
+                <template #label-action>
+                  <button
+                    type="button"
+                    :disabled="isLocating"
+                    @click="useCurrentLocationForAddress"
+                    class="group flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary-dark transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 disabled:opacity-60"
+                  >
+                    <svg
+                      v-if="!isLocating"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-110"
+                    >
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span v-if="isLocating">Mencari lokasi...</span>
+                    <span v-else>Gunakan Lokasi Saat Ini</span>
+                  </button>
+                </template>
+                <textarea
+                  v-model="deliveryAddress"
+                  rows="3"
+                  required
+                  placeholder="Ketik alamat, atau pakai tombol lokasi di atas"
+                  class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                ></textarea>
+                <template #footer>
+                  <p v-if="locationError" class="text-xs text-red-600 dark:text-red-400">
+                    {{ locationError }}
+                  </p>
+                </template>
+              </FormField>
 
-            <FormField label="Catatan (opsional)">
-              <template #icon>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
-              </template>
-              <textarea
-                v-model="notes"
-                rows="2"
-                placeholder="Ada permintaan khusus untuk pesanan ini?"
-                class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
-              ></textarea>
-            </FormField>
+              <FormField label="Catatan (opsional)">
+                <template #icon>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="8" y1="13" x2="16" y2="13" />
+                    <line x1="8" y1="17" x2="13" y2="17" />
+                  </svg>
+                </template>
+                <textarea
+                  v-model="notes"
+                  rows="2"
+                  placeholder="Ada permintaan khusus untuk pesanan ini?"
+                  class="rounded-2xl bg-ink/[0.04] px-4 py-2.5 text-sm text-ink placeholder-subtle focus:outline-none focus:ring-2 focus:ring-primary-dark"
+                ></textarea>
+              </FormField>
 
-            <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+              <p v-if="errorMessage" class="text-sm text-red-600 dark:text-red-400">
+                {{ errorMessage }}
+              </p>
 
-            <button
-              type="submit"
-              :disabled="isSubmitting || cartItems.length === 0"
-              class="flex items-center justify-center rounded-full bg-primary py-3 font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-70"
-            >
-              <LatticeLoader
-                v-if="isSubmitting"
-                label="Memproses"
-                status="working"
-                :show-timer="false"
-                color="currentColor"
-                :cell-size="5"
-                font-size="13"
-              />
-              <span v-else>Buat Pesanan</span>
-            </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting || cartItems.length === 0"
+                class="flex items-center justify-center rounded-full bg-primary py-3 font-bold text-secondary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-70"
+              >
+                <LatticeLoader
+                  v-if="isSubmitting"
+                  label="Memproses"
+                  status="working"
+                  :show-timer="false"
+                  color="currentColor"
+                  :cell-size="5"
+                  font-size="13"
+                />
+                <span v-else>Buat Pesanan</span>
+              </button>
             </div>
           </DoubleBezelCard>
         </form>

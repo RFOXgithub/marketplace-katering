@@ -30,7 +30,12 @@ async function handleLogin(credentials) {
 <template>
   <main class="flex min-h-[100dvh]">
     <div class="relative hidden w-2/3 overflow-hidden md:block">
-      <img src="/login.png" alt="loginIlustrasi" class="h-full w-full object-cover" />
+      <img
+        src="/login.png"
+        alt="loginIlustrasi"
+        loading="lazy"
+        class="h-full w-full object-cover"
+      />
       <div
         class="absolute inset-0 bg-gradient-to-t from-secondary/80 via-secondary/0 to-secondary/10"
       />
@@ -72,12 +77,12 @@ async function handleLogin(credentials) {
         <h1 class="mt-3 text-2xl font-extrabold text-ink">
           <ScrambleText text="Selamat Datang" />
         </h1>
-        <p class="mt-1.5 mb-7 text-sm text-subtle">
-          Masuk untuk melanjutkan ke dashboard kamu
-        </p>
+        <p class="mt-1.5 mb-7 text-sm text-subtle">Masuk untuk melanjutkan ke dashboard kamu</p>
 
         <LoginForm :loading="isLoading" @submit="handleLogin" />
-        <p v-if="errorMessage" class="mt-3 text-xs text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+        <p v-if="errorMessage" class="mt-3 text-xs text-red-600 dark:text-red-400">
+          {{ errorMessage }}
+        </p>
 
         <p class="mt-7 text-center text-sm text-subtle">
           Belum punya akun?
